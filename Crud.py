@@ -2,8 +2,7 @@ import Utilities
 
 def add_item(list):  
     while True:
-        print("Please type new item name")
-        new_item=input().title()
+        new_item=input("Please type new item name").title()
         if Utilities.check_duplicate(list, new_item):
             print("Error, item already in list")
             break
@@ -15,13 +14,11 @@ def add_item(list):
 def amend_item(list):
     while True:
         Utilities.position_list(list)
-        print("\n Please type position in the list of item to be modified")
-        position=int(input())-1
+        position=int(input("\n Please type position in the list of item to be modified"))-1
         if position >=len(list):
             print("\n Error, number not available in list\n")
         else:
-            print("\n Please type new item name for the chosen position")
-            modified_item=input()
+            modified_item=input("\n Please type new item name for the chosen position")
             print("\n")
             if Utilities.check_duplicate(list, modified_item):
                 print("Error, item already in list")
@@ -34,10 +31,8 @@ def amend_item(list):
 def delete_item(list):
     while True:
         Utilities.position_list(list)
-        print("\n Please type position in the list of item to be deleted")
-        position=int(input())-1
-        print(f"Are you sure you want to delete item {position+1, list[position]}? Please select Y to confirm") 
-        confirmation=input()
+        position=int(input("\n Please type position in the list of item to be deleted"))-1
+        confirmation=input(f"Are you sure you want to delete item {position+1, list[position]}? Please select Y to confirm")
         print("\n")
         if confirmation.upper()=="Y":
             list.pop(position)
