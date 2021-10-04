@@ -13,7 +13,7 @@ Please contact hgourie1@jagualandrover with any questions.
 ## Building from source
 
 ## Contributing
-Rory Donaldson, Michael Welburn, Kevin Mason.
+@roryjbd, Michael Welburn, Kevin Mason.
 ## Authors/maintainers
 Hanae Gourier
 ## License
