@@ -1,6 +1,9 @@
+from os import system, name
+from time import sleep
+
 def import_file(product_list, courier_list):
-    read_txt_files(product_list, "Products.txt")
-    read_txt_files(courier_list, "Couriers.txt")
+    read_txt_files(product_list, "products.txt")
+    read_txt_files(courier_list, "couriers.txt")
 
 def read_txt_files(list, file_name):
     try:
@@ -11,9 +14,9 @@ def read_txt_files(list, file_name):
         print("Failed to open txt file")
 
 def save_lists(product_list, courier_list): 
-    exporting_list(product_list, "Products.txt")
-    exporting_list(courier_list, "Couriers.txt")
-
+    exporting_list(product_list, "products.txt")
+    exporting_list(courier_list, "couriers.txt")
+    
 def exporting_list(list, file_name):
     try:
         with open(file_name, "w") as file:
@@ -29,3 +32,7 @@ def check_duplicate(list, item):
 def position_list(list):
     for (num, item) in enumerate(list):
         print(num+1, item)
+
+def clear_screen():
+    sleep(5)
+    system("cls")
