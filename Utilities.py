@@ -1,5 +1,4 @@
-from os import system, name
-from time import sleep
+from os import system
 
 def import_file(product_list, courier_list):
     read_txt_files(product_list, "products.txt")
@@ -34,5 +33,4 @@ def position_list(list):
         print(num+1, item)
 
 def clear_screen():
-    sleep(5)
     system("cls")
