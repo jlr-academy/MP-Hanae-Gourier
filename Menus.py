@@ -58,5 +58,4 @@ def sub_menu(sub_menu_item, list1, list2):
             crud.delete_item(sub_menu_item,list1)
         else:
             print("User entry not recognised, programme will now go back to main menu")
-            break
-            
+            break      
