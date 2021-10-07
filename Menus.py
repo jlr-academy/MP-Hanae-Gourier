@@ -16,16 +16,16 @@ def main_menu(product_list, courier_list, orders_list):
             utilities.save_lists(product_list, courier_list)
             sys.exit()
         elif user_choice1==1:
-            sub_menu("Product",product_list)
+            sub_menu("Product",product_list, product_list)
         elif user_choice1==2:
-            sub_menu("Courier",courier_list)
+            sub_menu("Courier",courier_list, courier_list)
         elif user_choice1==3:
-            sub_menu("Orders",orders_list)
+            sub_menu("Orders",orders_list, courier_list)
         else:
             print("User entry not recognised, program will now exit. Thank you for visiting!")
             break
 
-def sub_menu(sub_menu_item, list):
+def sub_menu(sub_menu_item, list1, list2):
     utilities.clear_screen()
     while True:
         print(f"""
@@ -43,13 +43,19 @@ def sub_menu(sub_menu_item, list):
             break
         elif user_choice2==1:
             utilities.clear_screen()
-            print(list)
+            print(list1)
         elif user_choice2==2:
-            crud.add_item(list)
+            if sub_menu_item=="Orders":
+                crud.add_order(list1,list2)
+            else:
+                crud.add_item(sub_menu_item,list1)
         elif user_choice2==3:
-            crud.amend_item(list)
+            if sub_menu_item=="Orders":
+                crud.update_order(sub_menu_item,list1)
+            else:
+                crud.update_item(sub_menu_item,list1)
         elif user_choice2==4:
-            crud.delete_item(list)
+            crud.delete_item(sub_menu_item,list1)
         else:
             print("User entry not recognised, programme will now go back to main menu")
             break

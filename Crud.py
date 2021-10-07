@@ -1,21 +1,11 @@
 import utilities
 
-courier_list=["Speedy","Nifty","Express","Bolt"]
-orders_list=[{
-                "customer_name": "John",
-                "customer_address": "Unit 2, 12 Main Street, LONDON, WH1 2ER",
-                "customer_phone": "0789887334",
-                "courier": 2,
-                "status": "preparing"
-            }]
-order={}
-
-def add_item(list): 
+def add_item(sub_menu_item, list): 
     utilities.clear_screen() 
     while True:
-        new_item=input("Please type new item name: \n").title()
+        new_item=input(f"Please type new {sub_menu_item.lower()} name: \n").title()
         if utilities.check_duplicate(list, new_item):
-            print("Error, item already in list")
+            print(f"Error, {sub_menu_item.lower()} already in list")
             break
         else:
             list.append(new_item)
@@ -23,17 +13,17 @@ def add_item(list):
             print(list)
             break
 
-def add_order():
+def add_order(list1,list2):
     utilities.clear_screen()
-    new_item=get_new_order(courier_list)
-    orders_list.append(new_item)
-    print(orders_list)
+    new_item=get_new_order(list2)
+    list1.append(new_item)
+    print(list1)
 
-def get_new_order(courier_list):
+def get_new_order(list):
     customer_name= input("Please input customer name: \n")
     customer_address= input("Please input customer address: \n")
     customer_phone= input("Please input customer phone: \n")
-    print(utilities.position_list(courier_list)) ##Why am I getting None added to the list? 
+    print(utilities.position_list(list)) ##Why am I getting None added to the list? 
     chosen_courier=input("Please input index of courier chosen for this order: \n")
     order_status="PREPARING"
     order={
@@ -45,18 +35,18 @@ def get_new_order(courier_list):
             }  
     return order
 
-def amend_item(list):
+def update_item(sub_menu_item, list):
     utilities.clear_screen()
     while True:
         utilities.position_list(list)
-        position=int(input("\n Please type position in the list of item to be modified: "))-1
+        position=int(input(f"\n Please type position in the list of {sub_menu_item.lower()} to be modified: "))-1
         if position >=len(list):
             print("\n Error, number not available in list\n")
         else:
-            modified_item=input("\n Please type new item name for the chosen position: \n")
+            modified_item=input(f"\n Please type new {sub_menu_item.lower()} name for the chosen position: \n")
             print("\n")
             if utilities.check_duplicate(list, modified_item):
-                print("Error, item already in list")
+                print(f"Error, {sub_menu_item.lower()} already in list")
                 break
             else:
                 utilities.clear_screen()
@@ -64,17 +54,35 @@ def amend_item(list):
                 utilities.position_list(list)
                 break
 
-def delete_item(list):
+def delete_item(sub_menu_item, list, position=None, confirmation=None):   #default arguments - if not called will be this value
     utilities.clear_screen()
     while True:
         utilities.position_list(list)
-        position=int(input("\n Please type position in the list of item to be deleted: "))-1
-        confirmation=input(f"Are you sure you want to delete item {position+1, list[position]}? Please select Y to confirm: ")
+        if position is None:
+            position=int(input(f"\n Please type position in the list of {sub_menu_item.lower()} to be deleted: "))-1
+        if confirmation is None: 
+            confirmation=input(f"Are you sure you want to delete {sub_menu_item.lower()} {position+1, list[position]}? Please select Y to confirm: ")
         utilities.clear_screen()
         if confirmation.upper()=="Y":
+    
             list.pop(position)
             utilities.position_list(list)
             break
         else:
-            print("Error, item already in list")
+            print(f"Error, {sub_menu_item.lower()} already in list")
+            break
+
+def update_order(sub_menu_item, list):
+    utilities.clear_screen()
+    while True:
+        utilities.position_list(list)
+        position=int(input(f"\n Please type position in the list of {sub_menu_item.lower()} to be modified: "))-1
+        if position >=len(list):
+            print("\n Error, number not available in list\n")
+        else:
+            print(list[position])
+            category=(input("Please type in the category of the order you would like to modify"))
+            new_category_input=(input("Please type in the new value for this category"))
+            list[position][category]=new_category_input
+            print(utilities.position_list(list))
             break

@@ -27,6 +27,7 @@ def exporting_list(list, file_name):
 def check_duplicate(list, item):
     if item.lower() in (x.lower() for x in list):
         return True
+    return False
 
 def position_list(list):
     for (num, item) in enumerate(list):
