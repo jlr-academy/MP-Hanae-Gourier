@@ -25,7 +25,7 @@ def main_menu(product_list, courier_list, orders_list):
             print("User entry not recognised, program will now exit. Thank you for visiting!")
             break
 
-def sub_menu(sub_menu_item, list1, list2):
+def sub_menu(sub_menu_item, list1, list2):   #commonise text to fit both types of sub_menus
     utilities.clear_screen()
     while True:
         if sub_menu_item=="Orders":
