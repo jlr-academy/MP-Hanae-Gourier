@@ -43,7 +43,7 @@ def test_update_order_status():
                 "status": "DELIVERED"
                 }
     #act
-    crud.update_order("Orders",mock_orders_list,1,"status", "DELIVERED")
+    crud.update_order(mock_orders_list,1,"status", "DELIVERED")
     #assert
     if expected not in mock_orders_list:
         raise AssertionError

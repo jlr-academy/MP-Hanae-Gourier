@@ -28,15 +28,27 @@ def main_menu(product_list, courier_list, orders_list):
 def sub_menu(sub_menu_item, list1, list2):
     utilities.clear_screen()
     while True:
-        print(f"""
-        \n                         <{sub_menu_item.upper()} MENU>\n
-        Please select from the following options:\n 
-        0. Return to main menu
-        1. View {sub_menu_item.lower()} list
-        2. Add {sub_menu_item.lower()}
-        3. Update existing {sub_menu_item.lower()}
-        4. Delete {sub_menu_item.lower()}\n
-    """)
+        if sub_menu_item=="Orders":
+            print("""
+            \n                         <ORDERS MENU>\n
+            Please select from the following options:\n 
+            0. Return to main menu
+            1. View orders list
+            2. Add order
+            3. Update existing order status
+            4. Update existing order
+            5. Delete order\n
+            """)
+        else:
+            print(f"""
+            \n                         <{sub_menu_item.upper()} MENU>\n
+            Please select from the following options:\n 
+            0. Return to main menu
+            1. View {sub_menu_item.lower()} list
+            2. Add {sub_menu_item.lower()}
+            3. Update existing {sub_menu_item.lower()}
+            4. Delete {sub_menu_item.lower()}\n
+            """)
         user_choice2=int(input())
         if user_choice2==0:
             utilities.clear_screen()
@@ -51,10 +63,15 @@ def sub_menu(sub_menu_item, list1, list2):
                 crud.add_item(sub_menu_item,list1)
         elif user_choice2==3:
             if sub_menu_item=="Orders":
-                crud.update_order(sub_menu_item,list1)
+                crud.update_order_status(list1)
             else:
                 crud.update_item(sub_menu_item,list1)
         elif user_choice2==4:
+            if sub_menu_item=="Orders":
+                crud.update_order(list1)
+            else:
+                crud.delete_item(sub_menu_item,list1)
+        elif user_choice2==5 and sub_menu_item=="Orders":
             crud.delete_item(sub_menu_item,list1)
         else:
             print("User entry not recognised, programme will now go back to main menu")

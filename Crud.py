@@ -72,18 +72,25 @@ def delete_item(sub_menu_item, list, position=None, confirmation=None):   #defau
             print(f"Error, {sub_menu_item.lower()} already in list")
             break
 
-def update_order(sub_menu_item, list, position=None, category=None, new_category_input=None):
+def update_order(list, position=None, category=None, new_category_input=None):
     utilities.clear_screen()
     utilities.position_list(list)
     if position is None:
-        position=int(input(f"\n Please type position in the list of {sub_menu_item.lower()} to be modified: "))-1
+        position=int(input(f"\n Please type position in the list of order to be modified: "))-1
         if position >=len(list):
             print("\n Error, number not available in list\n")
         else:
             utilities.print_dict(list[position])
             if category is None:
                 category=(input("Please type position in the list of the item you would like to modify: \n"))
-            if new_category_input is None:
-                new_category_input=(input("Please type in the new value for this category: \n"))
+            if category == "status":
+                if new_category_input is None:
+                    new_category_input=(input("Please type in the new order status: \n"))           
+            else:
+                if new_category_input is None:
+                    new_category_input=(input("Please type in the new value: \n"))
     list[position][category]=new_category_input
     utilities.clear_screen()
+
+def update_order_status(list):
+    update_order(list, category="status")
