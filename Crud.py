@@ -23,7 +23,7 @@ def get_new_order(list):
     customer_name= input("Please input customer name: \n")
     customer_address= input("Please input customer address: \n")
     customer_phone= input("Please input customer phone: \n")
-    print(utilities.position_list(list)) ##Why am I getting None added to the list? 
+    print(utilities.position_list(list)) 
     chosen_courier=input("Please input index of courier chosen for this order: \n")
     order_status="PREPARING"
     order={
@@ -72,17 +72,18 @@ def delete_item(sub_menu_item, list, position=None, confirmation=None):   #defau
             print(f"Error, {sub_menu_item.lower()} already in list")
             break
 
-def update_order(sub_menu_item, list):
+def update_order(sub_menu_item, list, position=None, category=None, new_category_input=None):
     utilities.clear_screen()
-    while True:
-        utilities.position_list(list)
+    utilities.position_list(list)
+    if position is None:
         position=int(input(f"\n Please type position in the list of {sub_menu_item.lower()} to be modified: "))-1
         if position >=len(list):
             print("\n Error, number not available in list\n")
         else:
-            print(list[position])
-            category=(input("Please type in the category of the order you would like to modify"))
-            new_category_input=(input("Please type in the new value for this category"))
-            list[position][category]=new_category_input
-            print(utilities.position_list(list))
-            break
+            utilities.print_dict(list[position])
+            if category is None:
+                category=(input("Please type position in the list of the item you would like to modify: \n"))
+            if new_category_input is None:
+                new_category_input=(input("Please type in the new value for this category: \n"))
+    list[position][category]=new_category_input
+    utilities.clear_screen()

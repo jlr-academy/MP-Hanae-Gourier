@@ -35,3 +35,11 @@ def position_list(list):
 
 def clear_screen():
     system("cls")
+
+def print_dict(dict):
+    print("\n")
+    num=1
+    for key, value in dict.items():
+        print(num, key, ":", value)
+        num+=1
+    print("\n")
