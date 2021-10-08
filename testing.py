@@ -12,7 +12,7 @@ test_check_duplicate(["skates", "skateboard", "skis"], "wakeboard", False)
 
 def test_delete_item():
     #assemble
-    expected = utilities.position_list(["skateboard", "skis"])
+    expected = utilities.print_position_list(["skateboard", "skis"])
     #act
     actual = crud.delete_item("Product", ["skates", "skateboard", "skis"], 0, "y")
     #assert

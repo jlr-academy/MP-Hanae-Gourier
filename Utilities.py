@@ -29,10 +29,6 @@ def check_duplicate(list, item):
         return True
     return False
 
-def position_list(list):
-    for (num, item) in enumerate(list):
-        print(num+1, item)
-
 def clear_screen():
     system("cls")
 
@@ -43,3 +39,10 @@ def print_dict(dict):
         print(num, key, ":", value)
         num+=1
     print("\n")
+
+def print_position_list(list):
+    print("\n")
+    num=1
+    for item in list:
+        print(num,"-", item)
+        num+=1

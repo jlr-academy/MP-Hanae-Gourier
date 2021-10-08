@@ -55,7 +55,7 @@ def sub_menu(sub_menu_item, list1, list2):
             break
         elif user_choice2==1:
             utilities.clear_screen()
-            print(list1)
+            utilities.print_position_list(list1)
         elif user_choice2==2:
             if sub_menu_item=="Orders":
                 crud.add_order(list1,list2)
