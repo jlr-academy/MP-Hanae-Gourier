@@ -2,11 +2,11 @@ from os import system
 
 def import_file(product_list, courier_list):
     read_txt_files(product_list, "data\products.txt")
-    read_txt_files(courier_list, "data\couriers.txt")
+    read_txt_files(courier_list, "data\couriers.txt") 
 
 def read_txt_files(my_list, file_name): #WIP
     try:
-        file_txt=open(file_name) #removed r as is default
+        file_txt=open(file_name,"r") #removed r as is default
         for item in file_txt.readlines():
             my_list.append(item.strip())          
     except FileNotFoundError:

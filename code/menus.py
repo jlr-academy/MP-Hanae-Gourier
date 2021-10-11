@@ -6,7 +6,7 @@ def main_menu(product_list, courier_list, orders_list):
     while True:
         print(
         """\n                         <MAIN MENU>\n
-        Please select from the following options:\n 
+    Please select from the following options:\n 
         0. Exit application
         1. Product menu options
         2. Courier menu options
@@ -25,30 +25,22 @@ def main_menu(product_list, courier_list, orders_list):
             print("User entry not recognised, program will now exit. Thank you for visiting!")
             break
 
-def sub_menu(sub_menu_item, list1, list2):   #commonise text to fit both types of sub_menus
+def sub_menu(sub_menu_item, list1, list2):   
     utilities.clear_screen()
     while True:
-        if sub_menu_item=="Orders":
-            print("""
-            \n                         <ORDERS MENU>\n
-            Please select from the following options:\n 
-            0. Return to main menu
-            1. View orders list
-            2. Add order
-            3. Update existing order status
-            4. Update existing order
-            5. Delete order\n
-            """)
-        else:
-            print(f"""
+        print(f"""
             \n                         <{sub_menu_item.upper()} MENU>\n
-            Please select from the following options:\n 
+    Please select from the following options:\n 
             0. Return to main menu
             1. View {sub_menu_item.lower()} list
-            2. Add {sub_menu_item.lower()}
-            3. Update existing {sub_menu_item.lower()}
-            4. Delete {sub_menu_item.lower()}\n
-            """)
+            2. Add {sub_menu_item.lower()}""")
+        if sub_menu_item=="Orders":
+            print("""            3. Update existing order status
+            4. Update existing order
+            5. Delete order\n""")
+        else:
+            print(f"""            3. Update existing {sub_menu_item.lower()}
+            4. Delete {sub_menu_item.lower()}\n""")
         user_choice2=int(input())
         if user_choice2==0:
             utilities.clear_screen()

@@ -1,6 +1,53 @@
 import code.utilities
 import code.crud
 
+#def test_add_item():
+#     #assemble
+    
+#     expected = 
+#     #act
+#     actual=code.crud.add_item()      
+    
+#     #assert
+#     assert actual == expected
+#test_add_item()
+
+
+#def test_add_order():
+#     #assemble
+    
+#     expected = 
+#     #act
+#     actual=code.crud.add_order()      
+    
+#     #assert
+#     assert actual == expected
+#test_add_order()
+
+
+#def test_get_new_order():
+#     #assemble
+    
+#     expected = 
+#     #act
+#     actual=code.crud.get_new_order()      
+    
+#     #assert
+#     assert actual == expected
+#test_get_new_order()
+
+#def test_update_item():
+#     #assemble
+    
+#     expected = 
+#     #act
+#     actual=code.crud.update_item()      
+    
+#     #assert
+#     assert actual == expected
+#test_update_item()
+
+
 def test_delete_item():
     #assemble
     expected = code.utilities.print_position_list(["skateboard", "skis"])
@@ -9,6 +56,17 @@ def test_delete_item():
     #assert
     assert actual == expected
 test_delete_item()
+
+#def test_update_order():
+#     #assemble
+    
+#     expected = 
+#     #act
+#     actual=code.crud.update_order()      
+    
+#     #assert
+#     assert actual == expected
+#test_update_order()
     
 def test_update_order_status():
     #assemble
