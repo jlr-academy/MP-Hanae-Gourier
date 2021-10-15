@@ -13,19 +13,20 @@ def main_menu(product_list, courier_list, orders_list):
         3. Orders menu options\n""")
         user_choice1=int(input())
         if user_choice1==0:
-            utilities.save_lists(product_list, courier_list)
-            sys.exit()
+            utilities.save_list(product_list, courier_list, orders_list)
+            break
         elif user_choice1==1:
-            sub_menu("Product",product_list, product_list)
+            sub_menu("Product",product_list, product_list, product_list)
         elif user_choice1==2:
-            sub_menu("Courier",courier_list, courier_list)
+            sub_menu("Courier",courier_list, courier_list, courier_list)
         elif user_choice1==3:
-            sub_menu("Orders",orders_list, courier_list)
+            sub_menu("Orders",orders_list, courier_list, product_list)
         else:
             print("User entry not recognised, program will now exit. Thank you for visiting!")
             break
+    sys.exit()
 
-def sub_menu(sub_menu_item, list1, list2):   
+def sub_menu(sub_menu_item, list1, list2,list3):   
     utilities.clear_screen()
     while True:
         print(f"""
@@ -46,25 +47,37 @@ def sub_menu(sub_menu_item, list1, list2):
             utilities.clear_screen()
             break
         elif user_choice2==1:
-            utilities.clear_screen()
-            utilities.print_position_list(list1)
-        elif user_choice2==2:
             if sub_menu_item=="Orders":
-                crud.add_order(list1,list2)
+                display_list_orders(list1)
             else:
-                crud.add_item(sub_menu_item,list1)
+                utilities.print_position_list(list1)
+        elif user_choice2==2:
+            crud.add_item(sub_menu_item,list1, list2,list3)
         elif user_choice2==3:
             if sub_menu_item=="Orders":
-                crud.update_order_status(list1)
+                crud.update_order_status(sub_menu_item, list1)
             else:
                 crud.update_item(sub_menu_item,list1)
         elif user_choice2==4:
             if sub_menu_item=="Orders":
-                crud.update_order(list1)
+                crud.update_item(sub_menu_item,list1)
             else:
                 crud.delete_item(sub_menu_item,list1)
         elif user_choice2==5 and sub_menu_item=="Orders":
             crud.delete_item(sub_menu_item,list1)
         else:
-            print("User entry not recognised, programme will now go back to main menu")
+            print("User entry not recognised, program will now go back to main menu")
             break      
+
+def display_list_orders(my_list):
+    print("""Please select how you would like your list of orders to be displayed:
+        1. By index number
+        2. By status
+        3. By courier""")
+    user_choice3 = int(input())
+    if user_choice3 == 1:
+        utilities.print_position_list(my_list)
+    elif user_choice3 == 2:
+        utilities.list_orders_by_status(my_list)
+    elif user_choice3 == 3:
+        utilities.list_orders_by_courier(my_list)
