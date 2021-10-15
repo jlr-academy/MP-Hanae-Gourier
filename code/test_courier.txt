@@ -1,0 +1,6 @@
+name,phone
+
+John,1111
+
+Amanda,2222
+
