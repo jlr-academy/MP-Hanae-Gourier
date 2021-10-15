@@ -49,8 +49,10 @@ def sub_menu(sub_menu_item, list1, list2,list3):
         elif user_choice2==1:
             if sub_menu_item=="Orders":
                 display_list_orders(list1)
+            elif sub_menu_item=="Product":
+                utilities.print_product_position_list_pretty(list1)
             else:
-                utilities.print_position_list(list1)
+                utilities.print_courier_position_list_pretty(list1)
         elif user_choice2==2:
             crud.add_item(sub_menu_item,list1, list2,list3)
         elif user_choice2==3:
@@ -76,7 +78,7 @@ def display_list_orders(my_list):
         3. By courier""")
     user_choice3 = int(input())
     if user_choice3 == 1:
-        utilities.print_position_list(my_list)
+        utilities.print_orders_position_list_pretty(my_list)
     elif user_choice3 == 2:
         utilities.list_orders_by_status(my_list)
     elif user_choice3 == 3:

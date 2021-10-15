@@ -59,6 +59,35 @@ def print_position_list(my_list):
         print(num, "-", dict)
         num +=1
 
+def print_product_position_list_pretty(my_list):
+    print ("\n{:<10} {:<25} {:<10}".format('Index', 'Product Name', 'Product Price (GBP)'))
+    num=1
+    for dict in my_list:
+        print ("{:<10} {:<25} {:<10}".format("  "+str(num), dict["name"], "     "+str(dict["price"])))
+        num+=1
+
+def print_courier_position_list_pretty(my_list):
+    print ("\n{:<10} {:<25} {:<10}".format('Index', 'Courier Name', 'Courier Phone Number'))
+    num=1
+    for dict in my_list:
+        print ("{:<10} {:<25} {:<10}".format("  "+str(num), dict["name"], "     "+str(dict["phone"])))
+        num+=1
+
+def print_orders_position_list_pretty(my_list):
+    print ("\n{:<8} {:<18} {:<50} {:<17} {:<10} {:<14} {:<9}".format('Index', 'Customer Name', 'Customer Address', 'Customer Phone', 'Courier', 'Status', 'Items Ordered'))
+    num=1
+    for dict in my_list:
+        print ("{:<8} {:<18} {:<50} {:<17} {:<10} {:<14} {:<9}".format("  "+str(num), dict["customer_name"], dict["customer_address"], dict["customer_phone"],"   "+str(dict["courier"]),dict["status"],dict["items"]))
+        num+=1
+
+def print_any_position_list_pretty(sub_menu_item, my_list):
+    if sub_menu_item == "Product":
+        print_product_position_list_pretty(list)
+    elif sub_menu_item == "Courier":
+        print_courier_position_list_pretty(list)
+    elif sub_menu_item == "Orders":
+        print_orders_position_list_pretty(list)
+
 def get_list_of_dict_keys(dict):
     list_of_keys=[]
     for key in dict.keys():
@@ -79,10 +108,14 @@ def list_orders_by_courier(my_list):
         print(dict["courier"], "-", dict)
         num +=1
 
-def check_valid_phone_number(phone):
+def check_valid_phone_number(phone): #need to add to menu!!!
     try:
         int(phone)
         return int(phone)
     except:
         print("Error, this is not a valid phone number")
         return ValueError
+
+def print_logo(file_name):
+    logo= open (file_name,"r")
+    print(" ".join([line for line in logo]))
