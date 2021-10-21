@@ -78,11 +78,99 @@ def add_item(sub_menu_item, list1, list2,list3):
             utilities.print_orders_position_list_pretty(list1)
             break
 
+def update_product():
+    utilities.clear_screen()
+    while True:
+        utilities.print_product_position_list_pretty() 
+        try:
+            load_dotenv()
+            host = os.environ.get("mysql_host")
+            user = os.environ.get("mysql_user")
+            password = os.environ.get("mysql_pass")
+            database = os.environ.get("mysql_db")
+            connection = pymysql.connect(
+            host=host,
+            user=user,
+            password=password,
+            database=database)
+            cursor = connection.cursor()
+            modified_dict_index=int(input(f"\n Please input index of the product to be modified: "))
+            sql=('SELECT * FROM product WHERE product_id = %s')
+            val=(str(modified_dict_index))
+            cursor.execute(sql,val)
+            rows = cursor.fetchall()
+            for row in rows:
+                print(f'1 - Product Name: {row[1]}\n2 - Product Price: {row[2]}')
+            modified_item_index=int(input(f"\n Please input index of the category to be modified: \n"))
+            if modified_item_index==1:
+                modified_product_name=input(f"\n Please type in new product name: \n").title()
+                sql="UPDATE product SET product_name=%s WHERE product_id=%s"
+                val=(str(modified_product_name), str(modified_dict_index))
+                cursor.execute(sql,val)
+                connection.commit()
+            elif modified_item_index ==2:
+                modified_product_price=float(input(f"\n Please type in new product price: \n"))
+                sql="UPDATE product set product_price=%s WHERE product_id=%s"
+                val=(modified_product_price, str(modified_dict_index))
+                cursor.execute(sql,val)
+                connection.commit()
+            cursor.close()
+            connection.close()
+        except:
+            print("Failed to open product database table")
+        break
+    utilities.clear_screen()
+    utilities.print_product_position_list_pretty() 
+
+def update_courier():
+    utilities.clear_screen()
+    while True:
+        utilities.print_courier_position_list_pretty() 
+        try:
+            load_dotenv()
+            host = os.environ.get("mysql_host")
+            user = os.environ.get("mysql_user")
+            password = os.environ.get("mysql_pass")
+            database = os.environ.get("mysql_db")
+            connection = pymysql.connect(
+            host=host,
+            user=user,
+            password=password,
+            database=database)
+            cursor = connection.cursor()
+            modified_dict_index=int(input(f"\n Please input index of the courier to be modified: "))
+            sql=('SELECT * FROM courier WHERE courier_id = %s')
+            val=(str(modified_dict_index))
+            cursor.execute(sql,val)
+            rows = cursor.fetchall()
+            for row in rows:
+                print(f'1 - Courier Name: {row[1]}\n2 - Courier Phone Number: {row[2]}')
+            modified_item_index=int(input(f"\n Please input index of the category to be modified: \n"))
+            if modified_item_index==1:
+                modified_courier_name=input(f"\n Please type in new courier name: \n").title()
+                sql="UPDATE courier SET courier_name=%s WHERE courier_id=%s"
+                val=(str(modified_courier_name), str(modified_dict_index))
+                cursor.execute(sql,val)
+                connection.commit()
+            elif modified_item_index ==2:
+                modified_courier_phone=float(input(f"\n Please type in new courier phone number: \n"))
+                sql="UPDATE courier set courier_phone=%s WHERE courier_id=%s"
+                val=(modified_courier_phone, str(modified_dict_index))
+                cursor.execute(sql,val)
+                connection.commit()
+            cursor.close()
+            connection.close()
+        except:
+            print("Failed to open courier database table")
+        break
+    utilities.clear_screen()
+    utilities.print_courier_position_list_pretty()
+
 def update_item(sub_menu_item, list):
     utilities.clear_screen()
     utilities.print_any_position_list_pretty(sub_menu_item, list)
     while True:
-        modified_dict_index=int(input(f"\n Please input index of the {sub_menu_item.lower()} to be modified: "))-1 #how to catch error if input is not an integer? 
+        modified_dict_index=int(input(f"\n Please input index of the {sub_menu_item.lower()} to be modified: "))-1
         if modified_dict_index >=len(list):
             print("\n Error, number not available in list\n")
         else:
@@ -116,6 +204,64 @@ def delete_item(sub_menu_item, list, position=None, confirmation=None):
         else:
             #print(f"Error, {sub_menu_item.lower()} already in list")
             break
+
+def delete_product():
+    utilities.clear_screen()
+    while True:
+        utilities.print_product_position_list_pretty() 
+        try:
+            load_dotenv()
+            host = os.environ.get("mysql_host")
+            user = os.environ.get("mysql_user")
+            password = os.environ.get("mysql_pass")
+            database = os.environ.get("mysql_db")
+            connection = pymysql.connect(
+            host=host,
+            user=user,
+            password=password,
+            database=database)
+            cursor = connection.cursor()
+            modified_dict_index=int(input(f"\n Please input index of the product to be deleted: "))
+            sql="DELETE FROM product WHERE product_id=%s"
+            val=(str(modified_dict_index))
+            cursor.execute(sql,val)
+            connection.commit()
+            cursor.close()
+            connection.close()
+        except:
+            print("Failed to open product database table")
+        break
+    utilities.clear_screen()
+    utilities.print_product_position_list_pretty()
+
+def delete_courier():
+    utilities.clear_screen()
+    while True:
+        utilities.print_courier_position_list_pretty() 
+        try:
+            load_dotenv()
+            host = os.environ.get("mysql_host")
+            user = os.environ.get("mysql_user")
+            password = os.environ.get("mysql_pass")
+            database = os.environ.get("mysql_db")
+            connection = pymysql.connect(
+            host=host,
+            user=user,
+            password=password,
+            database=database)
+            cursor = connection.cursor()
+            modified_dict_index=int(input(f"\n Please input index of the courier to be deleted: "))
+            sql="DELETE FROM courier WHERE courier_id=%s"
+            val=(str(modified_dict_index))
+            cursor.execute(sql,val)
+            connection.commit()
+            cursor.close()
+            connection.close()
+        except:
+            print("Failed to open courier database table")
+        break
+    utilities.clear_screen()
+    utilities.print_courier_position_list_pretty()
 
 def update_order_status(sub_menu_item, my_list):
     utilities.clear_screen()

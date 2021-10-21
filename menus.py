@@ -59,13 +59,17 @@ def sub_menu(sub_menu_item, list1, list2,list3):
         elif user_choice2==3:
             if sub_menu_item=="Orders":
                 crud.update_order_status(sub_menu_item, list1)
+            elif sub_menu_item=="Product":
+                crud.update_product()
             else:
-                crud.update_item(sub_menu_item,list1)
+                crud.update_courier()
         elif user_choice2==4:
             if sub_menu_item=="Orders":
                 crud.update_item(sub_menu_item,list1)
+            elif sub_menu_item=="Product":
+                crud.delete_product()
             else:
-                crud.delete_item(sub_menu_item,list1)
+                crud.delete_courier()
         elif user_choice2==5 and sub_menu_item=="Orders":
             crud.delete_item(sub_menu_item,list1)
         else:
