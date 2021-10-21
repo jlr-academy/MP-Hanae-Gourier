@@ -68,7 +68,6 @@ def open_database_courier_table(my_list):
         return my_list  
     except:
         print("Failed to open courier database table") 
-open_database_courier_table([])
 
 def save_list(product_list, courier_list, orders_list):
     export_to_csv(product_list, "products.csv",["name", "price"])
@@ -83,9 +82,6 @@ def export_to_csv(list, file_name, field_names):
                 writer.writerows(list)
         except:
             print(f"Error, could not save {file_name} list")
-
-def export_product_list_to_database(my_list):
-    pass
     
 def check_duplicate(my_list, item, category):
     for dictionary in my_list:
@@ -116,7 +112,8 @@ def print_position_list(my_list):
         print(num, "-", dict)
         num +=1
 
-def print_product_position_list_pretty(my_list):
+def print_product_position_list_pretty():
+    my_list=open_database_product_table([])
     print ("\n{:<10} {:<25} {:<10}".format('Index', 'Product Name', 'Product Price (GBP)'))
     num=1
     for dict in my_list:
@@ -124,7 +121,8 @@ def print_product_position_list_pretty(my_list):
         print ("{:<10} {:<25} {:<10}".format("  "+str(num), dict["product_name"], "     "+str(formatted_price)))
         num+=1
 
-def print_courier_position_list_pretty(my_list):
+def print_courier_position_list_pretty():
+    my_list=open_database_courier_table([])
     print ("\n{:<10} {:<25} {:<10}".format('Index', 'Courier Name', 'Courier Phone Number'))
     num=1
     for dict in my_list:
@@ -140,9 +138,9 @@ def print_orders_position_list_pretty(my_list):
 
 def print_any_position_list_pretty(sub_menu_item, my_list):
     if sub_menu_item == "Product":
-        print_product_position_list_pretty(my_list)
+        print_product_position_list_pretty()
     elif sub_menu_item == "Courier":
-        print_courier_position_list_pretty(my_list)
+        print_courier_position_list_pretty()
     elif sub_menu_item == "Orders":
         print_orders_position_list_pretty(my_list)
 
@@ -167,14 +165,6 @@ def print_orders_position_list_by_courier_pretty(my_list):
     for dict in list_of_orders_by_courier:
         print ("{:<10} {:<8} {:<18} {:<50} {:<17} {:<17} {:<9}".format("   "+str(dict["courier"]), "  "+str(num), " "+str(dict["customer_name"]), " "+str(dict["customer_address"]), " "+str(dict["customer_phone"])," "+str(dict["status"]), " "+str(dict["items"])))
         num+=1
-
-def check_valid_phone_number(phone): #need to add to menu!!!
-    try:
-        int(phone)
-        return int(phone)
-    except:
-        print("Error, this is not a valid phone number")
-        return ValueError
 
 def print_logo(app_name):
     print("\n")

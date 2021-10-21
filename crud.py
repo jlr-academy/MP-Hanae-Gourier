@@ -1,4 +1,7 @@
 import utilities
+import pymysql
+import os
+from dotenv import load_dotenv
 
 def add_item(sub_menu_item, list1, list2,list3): 
     utilities.clear_screen()
@@ -6,40 +9,68 @@ def add_item(sub_menu_item, list1, list2,list3):
         while True:
             new_item_name=input(f"Please type new {sub_menu_item.lower()} name: \n").title()
             new_item_price=float(input(f"Please type new {sub_menu_item.lower()} price in GBP: \n"))
-            if utilities.check_duplicate(list1, new_item_name,"name"):
-                print(f"Error, {sub_menu_item.lower()} already in list")
-                break
-            else:
-                new_dict={"product_name": new_item_name, "product_price": new_item_price}
-                list1.append(new_dict)
-                utilities.clear_screen()
-                utilities.print_product_position_list_pretty(list1)
-                break
+            try:
+                load_dotenv()
+                host = os.environ.get("mysql_host")
+                user = os.environ.get("mysql_user")
+                password = os.environ.get("mysql_pass")
+                database = os.environ.get("mysql_db")
+                connection = pymysql.connect(
+                host=host,
+                user=user,
+                password=password,
+                database=database)
+                cursor = connection.cursor()
+                sql="INSERT INTO product (product_name, product_price) VALUES (%s, %s)"
+                val=(str(new_item_name), str(new_item_price))
+                cursor.execute(sql,val)
+                connection.commit()
+                cursor.close()
+                connection.close()
+            except:
+                print("Failed to open product database table") 
+            break
+        utilities.clear_screen()
+        utilities.print_product_position_list_pretty()     
     elif sub_menu_item == "Courier":
         while True:
             new_item_name=input(f"Please type new {sub_menu_item.lower()} name: \n").title()
             new_item_phone=input(f"Please type new {sub_menu_item.lower()} phone: \n")
-            if utilities.check_duplicate(list1, new_item_name,"courier_name"):
-                print(f"Error, {sub_menu_item.lower()} already in list")
-                break
-            else:
-                new_dict= {"courier_name": new_item_name, "courier_phone": new_item_phone}
-                list1.append(new_dict)
-                utilities.clear_screen()
-                utilities.print_courier_position_list_pretty(list1)
-                break
+            try:
+                load_dotenv()
+                host = os.environ.get("mysql_host")
+                user = os.environ.get("mysql_user")
+                password = os.environ.get("mysql_pass")
+                database = os.environ.get("mysql_db")
+                connection = pymysql.connect(
+                host=host,
+                user=user,
+                password=password,
+                database=database)
+                cursor = connection.cursor()
+                sql="INSERT INTO courier (courier_name, courier_phone) VALUES (%s, %s)"
+                val=(str(new_item_name), str(new_item_phone))
+                cursor.execute(sql,val)
+                connection.commit()
+                cursor.close()
+                connection.close()
+            except:
+                print("Failed to open courier database table") 
+            break
+        utilities.clear_screen()
+        utilities.print_courier_position_list_pretty()   
     elif sub_menu_item == "Orders":
         while True:
             new_customer_name=input(f"Please type new {sub_menu_item.lower()} cutomer name: \n").title()
             new_customer_address=input(f"Please type new {sub_menu_item.lower()} customer address: \n").title()
             new_customer_phone=input(f"Please type new {sub_menu_item.lower()} customer phone: \n")
-            utilities.print_courier_position_list_pretty(list2) 
+            utilities.print_courier_position_list_pretty() 
             new_courier=input("\n Please input index of courier chosen for this order: ")
             status_list=["PLACED", "PREPARING", "BEING DELIVERED", "DELIVERED", "CANCELLED"]
             utilities.print_position_list(status_list) 
             new_status_index=int(input(f"\n Please type index of order status: \n").upper())
             new_status_value=status_list[new_status_index]
-            utilities.print_product_position_list_pretty(list3) 
+            utilities.print_product_position_list_pretty() 
             new_items=input(f"Please type index of products to be added to order. To add more than one item, please separate indices with comma: \n").title()
             new_dict={"customer_name": new_customer_name, "customer_address": new_customer_address, "customer_phone":new_customer_phone, "courier":new_courier, "status":new_status_value, "items":new_items}
             list1.append(new_dict)

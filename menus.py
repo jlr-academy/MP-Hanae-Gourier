@@ -51,9 +51,9 @@ def sub_menu(sub_menu_item, list1, list2,list3):
             if sub_menu_item=="Orders":
                 display_list_orders(list1)
             elif sub_menu_item=="Product":
-                utilities.print_product_position_list_pretty(list1)
+                utilities.print_product_position_list_pretty()
             else:
-                utilities.print_courier_position_list_pretty(list1)
+                utilities.print_courier_position_list_pretty()
         elif user_choice2==2:
             crud.add_item(sub_menu_item,list1, list2,list3)
         elif user_choice2==3:
