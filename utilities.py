@@ -70,8 +70,6 @@ def open_database_courier_table(my_list):
         print("Failed to open courier database table") 
 
 def save_list(product_list, courier_list, orders_list):
-    export_to_csv(product_list, "products.csv",["name", "price"])
-    export_to_csv(courier_list, "courier.csv",["name", "phone"])
     export_to_csv(orders_list, "orders.csv",["customer_name", "customer_address","customer_phone", "courier", "status", "items"])
 
 def export_to_csv(list, file_name, field_names):
@@ -115,19 +113,15 @@ def print_position_list(my_list):
 def print_product_position_list_pretty():
     my_list=open_database_product_table([])
     print ("\n{:<10} {:<25} {:<10}".format('Index', 'Product Name', 'Product Price (GBP)'))
-    num=1
     for dict in my_list:
         formatted_price=format((float(dict["product_price"])), ".2f")
-        print ("{:<10} {:<25} {:<10}".format("  "+str(num), dict["product_name"], "     "+str(formatted_price)))
-        num+=1
+        print ("{:<10} {:<25} {:<10}".format("  "+str(dict["product_id"]), dict["product_name"], "     "+str(formatted_price)))
 
 def print_courier_position_list_pretty():
     my_list=open_database_courier_table([])
     print ("\n{:<10} {:<25} {:<10}".format('Index', 'Courier Name', 'Courier Phone Number'))
-    num=1
     for dict in my_list:
-        print ("{:<10} {:<25} {:<10}".format("  "+str(num), dict["courier_name"], "     "+str(dict["courier_phone"])))
-        num+=1
+        print ("{:<10} {:<25} {:<10}".format("  "+str(dict["courier_id"]), dict["courier_name"], "     "+str(dict["courier_phone"])))
 
 def print_orders_position_list_pretty(my_list):
     print ("\n{:<8} {:<18} {:<50} {:<17} {:<10} {:<17} {:<9}".format('Index', 'Customer Name', 'Customer Address', 'Customer Phone', 'Courier', 'Status', 'Items Ordered'))
