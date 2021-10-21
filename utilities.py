@@ -112,10 +112,10 @@ def print_position_list(my_list):
 
 def print_product_position_list_pretty():
     my_list=open_database_product_table([])
-    print ("\n{:<10} {:<25} {:<10}".format('Index', 'Product Name', 'Product Price (GBP)'))
+    print ("\n{:<10} {:<25} {:<20} {:<25}".format('Index', 'Product Name', 'Product Price (GBP)', 'Product Quantity(Units)'))
     for dict in my_list:
         formatted_price=format((float(dict["product_price"])), ".2f")
-        print ("{:<10} {:<25} {:<10}".format("  "+str(dict["product_id"]), dict["product_name"], "     "+str(formatted_price)))
+        print ("{:<10} {:<25} {:<20} {:<25}".format("  "+str(dict["product_id"]), dict["product_name"], "     "+str(formatted_price),"     "+str(dict["product_quantity"])))
 
 def print_courier_position_list_pretty():
     my_list=open_database_courier_table([])
@@ -164,3 +164,9 @@ def print_logo(app_name):
     print("\n")
     logo_font = Figlet(font='stampatello', justify="center")
     printy(logo_font.renderText(app_name),"cB")
+
+def transform_inputs_into_list(inputs):
+    input_list=inputs.split()
+    for i in range(len(input_list)):
+        input_list[i]=int(input_list[i])
+    return input_list

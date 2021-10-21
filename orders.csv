@@ -1,5 +1,6 @@
 customer_name,customer_address,customer_phone,courier,status,items
-John,"Unit 2, 12 Main Street, LONDON, WH1 2ER",0789887334,2,BEING DELIVERED,"1,1"
-Elizabeth,Buckingham,007,1,PREPARING,"1,2,3,4"
-Michael,Beverley,0000000,2,PLACED,"2,2,2"
-David,Serengeti,78787878,3,PLACED,"1,3,4"
+John,"Unit 2, 12 Main Street, LONDON, WH1 2ER",0789887334,2,BEING DELIVERED,3 6
+Elizabeth,Buckingham,007,1,PREPARING,4 7 19 24 24
+Michael,Beverley,0000000,2,PLACED,5 5 5
+David,Serengeti,78787878,3,PLACED,1 3 4
+A,A,3,1,PREPARING,1 7
