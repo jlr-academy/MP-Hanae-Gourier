@@ -98,11 +98,6 @@ def print_dict(dict):
         num += 1
     print("\n")
 
-def print_position_list_enum(my_list):
-    print("\n")
-    for index, item in enumerate(my_list, start=1):
-            print({index},"-",{item})
-
 def print_position_list(my_list):
     print("\n")
     num = 1
@@ -202,7 +197,7 @@ def select_changing_quantities(my_list):
         final_list.append(changing_quantities)
     return final_list
 
-def new_product_quantities(previous_quantities:list, order_quantities:list):
+def define_new_product_quantities(previous_quantities:list, order_quantities:list):
     for item in previous_quantities:
         for x in order_quantities:
             if item[0]==x[0]:
@@ -220,8 +215,6 @@ def reverse_new_product_quantities(previous_quantities:list, order_quantities:li
                 new_item_quantity=int(item[1])+int(x[1])
                 item[1]=new_item_quantity
     return previous_quantities   
-    
-#new_product_quantities([[1,5],[2,10],[5,5]], [[2,2],[5,1]])
 
 def converting_tuples_into_lists(list_of_tuples:list):
     new_list=[]
@@ -229,12 +222,6 @@ def converting_tuples_into_lists(list_of_tuples:list):
         my_list=list(tuple)
         new_list.append(my_list)
     return new_list
-    
-# list=converting_tuples_into_lists([(1,3), (3,4),(5,10)])
-# print(list)
-# test_tuples=select_quantities_from_product_table()
-# test_list=converting_tuples_into_lists(test_tuples)
-# new_product_quantities(test_list, [[2,2],[5,1]])
 
 def upload_new_quantities_to_db(order_quantities:list):
     try:
@@ -272,7 +259,5 @@ def update_db_quantities(amended_items_list:list):
     previous_quantities_tuples=select_quantities_from_product_table()
     previous_quantities=converting_tuples_into_lists(previous_quantities_tuples)
     order_quantities=select_changing_quantities(amended_items_list)
-    new_quantities= new_product_quantities(previous_quantities, order_quantities)
+    new_quantities= define_new_product_quantities(previous_quantities, order_quantities)
     upload_new_quantities_to_db(new_quantities)
-
-#upload_new_quantities_to_db([[1, 5], [3, 10], [4, 5], [5, 10], [6, 10], [7, 5], [19, 5], [24, 10]])

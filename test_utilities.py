@@ -1,50 +1,23 @@
 import utilities
 import pytest
 from unittest import mock
+from unittest.mock import patch
 import csv
 
-@mock.patch("utilities.read_txt_files", return_value=["oops", "atchoo"]) #not a good test because this is not a good function! Need to refactor!
-def test_import_file(mock_read_txt_files):
-    #assemble
-    #act
-    utilities.import_file([],[],[])    
-    #assert
-    mock_read_txt_files.assert_called()
+def test_import_file():
+    pass
 
-# def test_read_txt_files():
-#     #assemble
-#     test_list = []
-#     test_file_name = "test_courier.csv"
-#     #act
-#     actual=utilities.read_txt_files(test_list, test_file_name)      
-#     #assert
-#     assert len(test_list)==2
+def test_read_csv_file():
+    pass
 
-def test_read_txt_files_that_doesnt_exist():
-    #assemble
-    test_list = []
-    test_file_name = "doesnt_exist.txt"
-    #act
-    actual=utilities.read_txt_files(test_list, test_file_name)      
-    #assert
-    assert pytest.raises(Exception)
-    
-def test_read_txt_files_wrong_type():
-    #assemble
-    test_list = []
-    test_file_name = "test_courier.txt"
-    #act
-    actual=utilities.read_txt_files(test_list, test_file_name)      
-    #assert
-    assert pytest.raises(Exception)    
+def test_open_database_product_table():
+    pass
 
-@mock.patch("utilities.export_to_csv", return_value=["oops", "atchoo"])
-def test_save_list(mock_export_to_csv): #not a good test because this is not a good function! Need to refactor!
-    #assemble
-    #act
-    utilities.save_list([],[],[])      
-    #assert
-    mock_export_to_csv.assert_called()
+def test_open_database_courier_table():
+    pass
+
+def test_save_list():
+    pass
 
 def test_export_to_csv():
     #assemble
@@ -83,57 +56,132 @@ def test_check_there_is_no_duplicate():
     #assert     
     assert expected == actual
 
-#def test_print_dict():   #How can I check this if the original function doesn't return anything?
-#     #assemble
-    
-#     expected = 
-#     #act
-#     actual=code.utilities.print_dict()      
-    
-#     #assert
-#     assert actual == expected
+def test_clear_screen():
+    pass
 
-
-#def test_print_position_list(): #How can I check this if the original function doesn't return anything?
-#     #assemble
-    
-#     expected = 
-#     #act
-#     actual=code.utilities.print_position_list()      
-    
-#     #assert
-#     assert actual == expected
-
-# def test_list_orders_by_status(): #How can I check this if the original function doesn't return anything?
-#     #assemble
-#     test_list=[{"name":"sushi", "status":"preparing"},{"name":"sashimi", "status":"delivered"},{"name":"oyakodon", "status":"preparing"}]
-#     #act
-#     actual=utilities.list_orders_by_status(test_list)     
-#     #assert
-#     assert #???Function not returning anything so nothing to assert - what should function return????
-
-# def test_list_orders_by_courier(): #How can I check this if the original function doesn't return anything?
-#     #assemble
-#     test_list=[{"name":"sushi", "courier":"2"},{"name":"sashimi", "courier":"2"},{"name":"oyakodon", "courier":"1"]
-#     #act
-#     actual=utilities.list_orders_by_courier(test_list)     
-#     #assert
-#     assert #???Function not returning anything so nothing to assert - what should function return????
-
-def test_check_valid_phone_number_happy_path():
+@patch('builtins.print')
+def test_print_dict(mock_print): #happy path
     #assemble
-    phone="123456"
-    expected=123456
+    test_dict={"la":"ba", "ra":"ta", "la":"na"}
+    expected = 5
     #act
-    actual=utilities.check_valid_phone_number(phone)
+    utilities.print_dict(test_dict)
+    #assert
+    mock_print.call_count == expected
+
+@patch('builtins.print')
+def test_print_position_list(mock_print): #happy path
+    #assemble
+    test_list=["la","ba","ra"]
+    expected =4
+    #act
+    utilities.print_position_list(test_list)
+    #assert
+    assert mock_print.call_count == expected
+
+
+def test_print_product_position_list_pretty():
+    pass
+
+def test_print_courier_position_list_pretty():
+    pass
+
+@patch('builtins.print')
+def test_print_orders_position_list_pretty(mock_print): #happy path - FAILS!!!!! TO BE FIXED!!!
+    #assemble
+    test_list=[{
+                "customer_name": "John",
+                "customer_address": "Unit 2, 12 Main Street, LONDON, WH1 2ER",
+                "customer_phone": "0789887334",
+                "courier": 2,
+                "status": "preparing",
+                "items": [1, 3, 4]
+                },
+                {
+                "customer_name": "John",
+                "customer_address": "Unit 2, 12 Main Street, LONDON, WH1 2ER",
+                "customer_phone": "0789887334",
+                "courier": 2,
+                "status": "preparing",
+                "items": [1, 3, 4]
+                }]
+    expected=2
+    #act
+    utilities.print_orders_position_list_pretty(test_list)
+    #assert
+    assert mock_print.call_count == expected
+
+def test_print_any_position_list_pretty():
+    pass
+    #need to assert that if picked product, would mock-call print_product_position_list_pretty
+
+def test_get_list_of_dict_keys():
+    #assemble
+    test_dict={"ra":2, "fa":1, "na":3}
+    expected=["ra", "fa", "na"]
+    #act
+    actual = utilities.get_list_of_dict_keys(test_dict)
+    #assert
+    actual == expected
+
+def test_print_orders_position_list_by_status_pretty():
+    pass
+
+def test_print_orders_position_list_by_status_pretty():
+    pass
+        
+def test_transform_inputs_into_lists(): #happy path
+    #assemble
+    inputs="1 5 24"
+    expected = [1,5,24]
+    #act
+    actual= utilities.transform_inputs_into_list(inputs)
     #assert
     assert actual == expected
 
-def test_check_valid_phone_number_unhappy_path():
+def test_changing_quantities(): #happy path
     #assemble
-    phone="lalala"
-    expected=ValueError
+    my_list=[1,1,1,2,2]
+    expected=[[1,3],[2,2]]
     #act
-    actual=utilities.check_valid_phone_number(phone)
+    actual=utilities.select_changing_quantities(my_list)
+    #assert
+    assert actual == expected
+
+def test_define_new_product_quantities(): #happy path
+    #assemble
+    my_list=[[1,3],[2,2]]
+    my_second_list=[[1,10],[2,10]]
+    expected=[[1,7],[2,8]]
+    #act
+    actual=utilities.define_new_product_quantities(my_second_list, my_list)
+    #assert
+    assert actual == expected
+
+def test_reverse_new_product_quantities(): #happy path
+    #assemble
+    my_list=[[1,3],[2,2]]
+    my_second_list=[[1,10],[2,10]]
+    expected=[[1,13],[2,12]]
+    #act
+    actual=utilities.reverse_new_product_quantities(my_second_list, my_list)
+    #assert
+    assert actual == expected
+
+def test_converting_tuples_into_lists(): #happy path
+    #assemble
+    my_list_of_tuples=[(1,3),(2,2)]
+    expected=[[1,3],[2,2]]
+    #act
+    actual=utilities.converting_tuples_into_lists(my_list_of_tuples)
+    #assert
+    assert actual == expected
+
+def test_converting_tuples_into_lists(): #happy path
+    #assemble
+    my_list_of_tuples=[(1,3),(2,2)]
+    expected=[[1,3],[2,2]]
+    #act
+    actual=utilities.converting_tuples_into_lists(my_list_of_tuples)
     #assert
     assert actual == expected
