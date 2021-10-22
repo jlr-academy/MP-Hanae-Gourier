@@ -3,7 +3,7 @@ import pymysql
 import os
 from dotenv import load_dotenv
 
-def add_item(sub_menu_item, list1, list2,list3): 
+def add_item(sub_menu_item, list1): 
     utilities.clear_screen()
     if sub_menu_item == "Product":
         while True:
