@@ -74,7 +74,7 @@ def add_item(sub_menu_item, list1, list2,list3):
             utilities.print_product_position_list_pretty() 
             new_items=input(f"Please type index of products to be added to order. To add more than one item, please separate indices with a space: \n")
             new_items_list=utilities.transform_inputs_into_list(new_items)
-            update_db_quantities(new_items_list)
+            utilities.update_db_quantities(new_items_list)
             new_dict={"customer_name": new_customer_name, "customer_address": new_customer_address, "customer_phone":new_customer_phone, "courier":new_courier, "status":new_status_value, "items":new_items}
             list1.append(new_dict)
             utilities.clear_screen()
@@ -190,10 +190,10 @@ def update_item(sub_menu_item, list):
             key_being_modified=list_of_keys[modified_item_index]
             previous_inp=dictionary[key_being_modified]
             previous_list=utilities.transform_inputs_into_list(previous_inp)
-            cancel_previous_order_products(previous_list)
+            utilities.cancel_previous_order_products(previous_list)
             modified_item_value=input(f"\n Please type in new list of products: \n").title()
             modified_item_value_list=utilities.transform_inputs_into_list(modified_item_value)
-            update_db_quantities(modified_item_value_list)
+            utilities.update_db_quantities(modified_item_value_list)
             dictionary = list[modified_dict_index]
             list_of_keys = utilities.get_list_of_dict_keys(dictionary)
             key_being_modified=list_of_keys[modified_item_index]
@@ -243,12 +243,19 @@ def delete_product():
             database=database)
             cursor = connection.cursor()
             modified_dict_index=int(input(f"\n Please input index of the product to be deleted: "))
-            sql="DELETE FROM product WHERE product_id=%s"
-            val=(str(modified_dict_index))
-            cursor.execute(sql,val)
-            connection.commit()
-            cursor.close()
-            connection.close()
+            confirmation=input(f"Are you sure you want to delete this product? Please select Y to confirm: ")
+            if confirmation =="y":
+                sql="DELETE FROM product WHERE product_id=%s"
+                val=(str(modified_dict_index))
+                cursor.execute(sql,val)
+                connection.commit()
+                cursor.close()
+                connection.close()
+            else:
+                connection.commit()
+                cursor.close()
+                connection.close()
+                break
         except:
             print("Failed to open product database table")
         break
@@ -272,12 +279,19 @@ def delete_courier():
             database=database)
             cursor = connection.cursor()
             modified_dict_index=int(input(f"\n Please input index of the courier to be deleted: "))
-            sql="DELETE FROM courier WHERE courier_id=%s"
-            val=(str(modified_dict_index))
-            cursor.execute(sql,val)
-            connection.commit()
-            cursor.close()
-            connection.close()
+            confirmation=input(f"Are you sure you want to delete this product? Please select Y to confirm: ")
+            if confirmation =="y":
+                sql="DELETE FROM courier WHERE courier_id=%s"
+                val=(str(modified_dict_index))
+                cursor.execute(sql,val)
+                connection.commit()
+                cursor.close()
+                connection.close()
+            else:
+                connection.commit()
+                cursor.close()
+                connection.close()
+                break
         except:
             print("Failed to open courier database table")
         break
@@ -302,108 +316,3 @@ def update_order_status(sub_menu_item, my_list):
             utilities.print_orders_position_list_pretty(my_list)
             break 
 
-def select_quantities_from_product_table():
-    try:
-        load_dotenv()
-        host = os.environ.get("mysql_host")
-        user = os.environ.get("mysql_user")
-        password = os.environ.get("mysql_pass")
-        database = os.environ.get("mysql_db")
-        connection = pymysql.connect(
-        host=host,
-        user=user,
-        password=password,
-        database=database)
-        cursor = connection.cursor()
-        sql="SELECT product_id, product_quantity FROM product"
-        cursor.execute(sql)
-        list_of_tuples=cursor.fetchall()
-        connection.commit()
-        cursor.close()
-        connection.close()
-        return list_of_tuples
-    except:
-        print("Failed to open product database table") 
-
-def select_changing_quantities(my_list):
-    my_list_set=set(my_list)
-    final_list=[]
-    for item in my_list_set:
-        changing_quantities=[item, my_list.count(item)]
-        final_list.append(changing_quantities)
-    return final_list
-
-def new_product_quantities(previous_quantities:list, order_quantities:list):
-    for item in previous_quantities:
-        for x in order_quantities:
-            if item[0]==x[0]:
-                new_item_quantity=int(item[1])-int(x[1])
-                item[1]=new_item_quantity
-    return previous_quantities
-
-def reverse_new_product_quantities(previous_quantities:list, order_quantities:list):
-    for item in previous_quantities:
-        for x in order_quantities:
-            if item[0]==x[0]:
-                new_item_quantity=int(item[1])+int(x[1])
-                item[1]=new_item_quantity
-    return previous_quantities   
-    
-#new_product_quantities([[1,5],[2,10],[5,5]], [[2,2],[5,1]])
-
-def converting_tuples_into_lists(list_of_tuples:list):
-    new_list=[]
-    for tuple in list_of_tuples:
-        my_list=list(tuple)
-        new_list.append(my_list)
-    return new_list
-    
-# list=converting_tuples_into_lists([(1,3), (3,4),(5,10)])
-# print(list)
-# test_tuples=select_quantities_from_product_table()
-# test_list=converting_tuples_into_lists(test_tuples)
-# new_product_quantities(test_list, [[2,2],[5,1]])
-
-def upload_new_quantities_to_db(order_quantities:list):
-    try:
-        load_dotenv()
-        host = os.environ.get("mysql_host")
-        user = os.environ.get("mysql_user")
-        password = os.environ.get("mysql_pass")
-        database = os.environ.get("mysql_db")
-        connection = pymysql.connect(
-        host=host,
-        user=user,
-        password=password,
-        database=database)
-        cursor = connection.cursor()
-        for item in order_quantities:
-            product_id=int(item[0])
-            product_quantity=int(item[1])
-            sql="UPDATE product set product_quantity=%s WHERE product_id=%s"
-            val=(str(product_quantity), str(product_id))
-            cursor.execute(sql,val)
-        connection.commit()
-        cursor.close()
-        connection.close()
-    except:
-        print("Failed to open product database table")
-
-def cancel_previous_order_products(amended_items_list:list):
-    previous_quantities_tuples=select_quantities_from_product_table()
-    previous_quantities=converting_tuples_into_lists(previous_quantities_tuples)
-    order_quantities=select_changing_quantities(amended_items_list)
-    new_quantities=reverse_new_product_quantities(previous_quantities, order_quantities)
-    upload_new_quantities_to_db(new_quantities)
-
-def update_db_quantities(amended_items_list:list):
-    previous_quantities_tuples=select_quantities_from_product_table()
-    previous_quantities=converting_tuples_into_lists(previous_quantities_tuples)
-    order_quantities=select_changing_quantities(amended_items_list)
-    new_quantities= new_product_quantities(previous_quantities, order_quantities)
-    upload_new_quantities_to_db(new_quantities)
-
-#upload_new_quantities_to_db([[1, 5], [3, 10], [4, 5], [5, 10], [6, 10], [7, 5], [19, 5], [24, 10]])
-
-def check_enough_stock():
-    pass

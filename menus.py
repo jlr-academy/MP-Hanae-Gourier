@@ -48,6 +48,7 @@ def sub_menu(sub_menu_item, list1, list2,list3):
             utilities.clear_screen()
             break
         elif user_choice2==1:
+            utilities.clear_screen()
             if sub_menu_item=="Orders":
                 display_list_orders(list1)
             elif sub_menu_item=="Product":
@@ -82,6 +83,7 @@ def display_list_orders(my_list):
         2. By status
         3. By courier""")
     user_choice3 = int(input())
+    utilities.clear_screen()
     if user_choice3 == 1:
         utilities.print_orders_position_list_pretty(my_list)
     elif user_choice3 == 2:
