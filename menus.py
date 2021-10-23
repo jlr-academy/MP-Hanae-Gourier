@@ -3,31 +3,34 @@ import sys
 import crud
 from printy import printy
 
-def main_menu(product_list, courier_list, orders_list): 
-    while True:
-        printy(
+def display_main_menu():
+    printy(
         """\n                         [c]<MAIN MENU>@\n
     Please select from the following options:\n 
         0. Exit application
         1. Product menu options
         2. Courier menu options
         3. Orders menu options\n""")
+
+def process_main_menu(product_list, courier_list, orders_list): 
+    while True:
+        display_main_menu()
         user_choice1=int(input())
         if user_choice1==0:
             utilities.save_list(product_list, courier_list, orders_list)
             break
         elif user_choice1==1:
-            sub_menu("Product",product_list, product_list, product_list)
+            sub_menu("Product",product_list)
         elif user_choice1==2:
-            sub_menu("Courier",courier_list, courier_list, courier_list)
+            sub_menu("Courier",courier_list)
         elif user_choice1==3:
-            sub_menu("Orders",orders_list, courier_list, product_list)
+            sub_menu("Orders",orders_list)
         else:
             print("User entry not recognised, program will now exit. Thank you for visiting!")
             break
     sys.exit()
 
-def sub_menu(sub_menu_item, list1, list2,list3):   
+def sub_menu(sub_menu_item, list1):   
     utilities.clear_screen()
     while True:
         printy(f"""
