@@ -3,7 +3,29 @@ import pymysql
 import os
 from dotenv import load_dotenv
 
-def add_item(sub_menu_item, list1): 
+def connect_to_sql():
+    load_dotenv()
+    host = os.environ.get("mysql_host")
+    user = os.environ.get("mysql_user")
+    password = os.environ.get("mysql_pass")
+    database = os.environ.get("mysql_db")
+    return pymysql.connect(
+    host=host,
+    user=user,
+    password=password,
+    database=database)
+
+def close_db(connection, cursor):
+    cursor.close()
+    connection.close()    
+
+# def insert_to_db(connection, cursor):
+#     sql="INSERT INTO product (product_name, product_price, product_quantity) VALUES (%s, %s, %s)"
+#     val=(str(new_item_name), str(new_item_price), str(new_item_quantity))
+#     cursor.execute(sql,val)
+#     connection.commit()
+
+def add_to_db(sub_menu_item): #products and courier in db
     utilities.clear_screen()
     if sub_menu_item == "Product":
         while True:
@@ -11,23 +33,13 @@ def add_item(sub_menu_item, list1):
             new_item_price=float(input(f"Please type new {sub_menu_item.lower()} price in GBP: \n"))
             new_item_quantity=int(input(f"Please type new {sub_menu_item.lower()} quantity: \n"))
             try:
-                load_dotenv()
-                host = os.environ.get("mysql_host")
-                user = os.environ.get("mysql_user")
-                password = os.environ.get("mysql_pass")
-                database = os.environ.get("mysql_db")
-                connection = pymysql.connect(
-                host=host,
-                user=user,
-                password=password,
-                database=database)
-                cursor = connection.cursor()
+                connection = connect_to_sql()
+                cursor=connection.cursor()
                 sql="INSERT INTO product (product_name, product_price, product_quantity) VALUES (%s, %s, %s)"
                 val=(str(new_item_name), str(new_item_price), str(new_item_quantity))
                 cursor.execute(sql,val)
                 connection.commit()
-                cursor.close()
-                connection.close()
+                close_db(connection, cursor)
             except:
                 print("Failed to open product database table") 
             break
@@ -38,17 +50,8 @@ def add_item(sub_menu_item, list1):
             new_item_name=input(f"Please type new {sub_menu_item.lower()} name: \n").title()
             new_item_phone=input(f"Please type new {sub_menu_item.lower()} phone: \n")
             try:
-                load_dotenv()
-                host = os.environ.get("mysql_host")
-                user = os.environ.get("mysql_user")
-                password = os.environ.get("mysql_pass")
-                database = os.environ.get("mysql_db")
-                connection = pymysql.connect(
-                host=host,
-                user=user,
-                password=password,
-                database=database)
-                cursor = connection.cursor()
+                connection = connect_to_sql()
+                cursor=connection.cursor()
                 sql="INSERT INTO courier (courier_name, courier_phone) VALUES (%s, %s)"
                 val=(str(new_item_name), str(new_item_phone))
                 cursor.execute(sql,val)
@@ -59,8 +62,9 @@ def add_item(sub_menu_item, list1):
                 print("Failed to open courier database table") 
             break
         utilities.clear_screen()
-        utilities.print_courier_position_list_pretty()   
-    elif sub_menu_item == "Orders":
+        utilities.print_courier_position_list_pretty()
+
+def add_item(sub_menu_item, list1):    # for orders in csv
         while True:
             new_customer_name=input(f"Please type new {sub_menu_item.lower()} cutomer name: \n").title()
             new_customer_address=input(f"Please type new {sub_menu_item.lower()} customer address: \n").title()
@@ -86,17 +90,8 @@ def update_product():
     while True:
         utilities.print_product_position_list_pretty() 
         try:
-            load_dotenv()
-            host = os.environ.get("mysql_host")
-            user = os.environ.get("mysql_user")
-            password = os.environ.get("mysql_pass")
-            database = os.environ.get("mysql_db")
-            connection = pymysql.connect(
-            host=host,
-            user=user,
-            password=password,
-            database=database)
-            cursor = connection.cursor()
+            connection = connect_to_sql()
+            cursor=connection.cursor()
             modified_dict_index=int(input(f"\n Please input index of the product to be modified: "))
             sql=('SELECT * FROM product WHERE product_id = %s')
             val=(str(modified_dict_index))
@@ -136,17 +131,8 @@ def update_courier():
     while True:
         utilities.print_courier_position_list_pretty() 
         try:
-            load_dotenv()
-            host = os.environ.get("mysql_host")
-            user = os.environ.get("mysql_user")
-            password = os.environ.get("mysql_pass")
-            database = os.environ.get("mysql_db")
-            connection = pymysql.connect(
-            host=host,
-            user=user,
-            password=password,
-            database=database)
-            cursor = connection.cursor()
+            connection = connect_to_sql()
+            cursor=connection.cursor()
             modified_dict_index=int(input(f"\n Please input index of the courier to be modified: "))
             sql=('SELECT * FROM courier WHERE courier_id = %s')
             val=(str(modified_dict_index))
@@ -231,17 +217,8 @@ def delete_product():
     while True:
         utilities.print_product_position_list_pretty() 
         try:
-            load_dotenv()
-            host = os.environ.get("mysql_host")
-            user = os.environ.get("mysql_user")
-            password = os.environ.get("mysql_pass")
-            database = os.environ.get("mysql_db")
-            connection = pymysql.connect(
-            host=host,
-            user=user,
-            password=password,
-            database=database)
-            cursor = connection.cursor()
+            connection = connect_to_sql()
+            cursor=connection.cursor()
             modified_dict_index=int(input(f"\n Please input index of the product to be deleted: "))
             confirmation=input(f"Are you sure you want to delete this product? Please select Y to confirm: ")
             if confirmation =="y":
@@ -267,17 +244,8 @@ def delete_courier():
     while True:
         utilities.print_courier_position_list_pretty() 
         try:
-            load_dotenv()
-            host = os.environ.get("mysql_host")
-            user = os.environ.get("mysql_user")
-            password = os.environ.get("mysql_pass")
-            database = os.environ.get("mysql_db")
-            connection = pymysql.connect(
-            host=host,
-            user=user,
-            password=password,
-            database=database)
-            cursor = connection.cursor()
+            connection = connect_to_sql()
+            cursor=connection.cursor()
             modified_dict_index=int(input(f"\n Please input index of the courier to be deleted: "))
             confirmation=input(f"Are you sure you want to delete this product? Please select Y to confirm: ")
             if confirmation =="y":

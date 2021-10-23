@@ -1,6 +1,4 @@
 import utilities
-import pytest
-from unittest import mock
 from unittest.mock import patch
 import csv
 
@@ -26,7 +24,7 @@ def test_export_to_csv():
     expected = [{"name":"skates", "price": "65"}, {"name":"skateboard", "price": "50"}, {"name":"skis", "price": "140"}]
     actual_list=[]
     #act
-    actual=utilities.export_to_csv(test_list, test_file_name, ["name", "price"])      
+    utilities.export_to_csv(test_list, test_file_name, ["name", "price"])      
     #assert
     with open(test_file_name) as file: 
         reader = csv.DictReader(file, delimiter=",")
@@ -62,7 +60,7 @@ def test_clear_screen():
 @patch('builtins.print')
 def test_print_dict(mock_print): #happy path
     #assemble
-    test_dict={"la":"ba", "ra":"ta", "la":"na"}
+    test_dict={"la":"ba", "ra":"ta", "wa":"na"}
     expected = 5
     #act
     utilities.print_dict(test_dict)

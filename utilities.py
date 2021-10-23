@@ -69,41 +69,35 @@ def open_database_courier_table(my_list):
     except:
         print("Failed to open courier database table") 
 
-def save_list(product_list, courier_list, orders_list):
+def save_list(orders_list):
     export_to_csv(orders_list, "orders.csv",["customer_name", "customer_address","customer_phone", "courier", "status", "items"])
 
-def export_to_csv(list, file_name, field_names):
+def export_to_csv(my_list, file_name, field_names):
         try:
             with open(file_name, "w") as output_file:
                 writer = csv.DictWriter(output_file, fieldnames=field_names)
                 writer.writeheader()
-                writer.writerows(list)
+                writer.writerows(my_list)
         except:
             print(f"Error, could not save {file_name} list")
     
 def check_duplicate(my_list, item, category):
     for dictionary in my_list:
-        if item.lower() in dictionary[category].lower(): 
-            return True
-        return False
+        return item.lower() in dictionary[category].lower()
 
 def clear_screen():
     system("cls")
 
 def print_dict(dict):
     print("\n")
-    num = 1
-    for key, value in dict.items():
+    for num, (key, value) in enumerate(dict.items(), start=1):
         print(num, "-", key, ":", value)
-        num += 1
     print("\n")
 
 def print_position_list(my_list):
     print("\n")
-    num = 1
-    for dict in my_list:
+    for num, dict in enumerate(my_list, start=1):
         print(num, "-", dict)
-        num +=1
 
 def print_product_position_list_pretty():
     my_list=open_database_product_table([])
@@ -120,10 +114,8 @@ def print_courier_position_list_pretty():
 
 def print_orders_position_list_pretty(my_list):
     printy ("\n{:<8} {:<18} {:<50} {:<17} {:<10} {:<17} {:<9}".format('Index', 'Customer Name', 'Customer Address', 'Customer Phone', 'Courier', 'Status', 'Items Ordered'), 'y>B')
-    num=1
-    for dict in my_list:
+    for num, dict in enumerate(my_list, start=1):
         print ("{:<8} {:<18} {:<50} {:<17} {:<10} {:<17} {:<9}".format("  "+str(num), dict["customer_name"], dict["customer_address"], dict["customer_phone"],"   "+str(dict["courier"]),dict["status"],dict["items"]))
-        num+=1
 
 def print_any_position_list_pretty(sub_menu_item, my_list):
     if sub_menu_item == "Product":
@@ -134,26 +126,19 @@ def print_any_position_list_pretty(sub_menu_item, my_list):
         print_orders_position_list_pretty(my_list)
 
 def get_list_of_dict_keys(dict):
-    list_of_keys=[]
-    for key in dict.keys():
-        list_of_keys.append(key)
-    return list_of_keys
+    return [key for key in dict.keys()]
 
 def print_orders_position_list_by_status_pretty(my_list):
     list_of_orders_by_status= sorted(my_list, key = lambda category : category["status"])
     printy ("\n {:<17} {:<8} {:<18} {:<50} {:<17} {:<10} {:<9}".format('Status', 'Index', 'Customer Name', 'Customer Address', 'Customer Phone', 'Courier', 'Items Ordered'), 'y>B')
-    num=1
-    for dict in list_of_orders_by_status:
+    for num, dict in enumerate(list_of_orders_by_status, start=1):
         print ("{:<17} {:<8} {:<18} {:<50} {:<17} {:<10} {:<9}".format(" "+str(dict["status"]), "  "+str(num), " "+str(dict["customer_name"]), " "+str(dict["customer_address"]), " "+str(dict["customer_phone"]),"   "+str(dict["courier"])," "+str(dict["items"])))
-        num+=1
 
 def print_orders_position_list_by_courier_pretty(my_list):
     list_of_orders_by_courier= sorted(my_list, key = lambda category : category["courier"])
     printy ("\n {:<10} {:<8} {:<18} {:<50} {:<17} {:<17} {:<9}".format('Courier', 'Index', 'Customer Name', 'Customer Address', 'Customer Phone', 'Status', 'Items Ordered'), 'y>B')
-    num=1
-    for dict in list_of_orders_by_courier:
+    for num, dict in enumerate(list_of_orders_by_courier, start=1):
         print ("{:<10} {:<8} {:<18} {:<50} {:<17} {:<17} {:<9}".format("   "+str(dict["courier"]), "  "+str(num), " "+str(dict["customer_name"]), " "+str(dict["customer_address"]), " "+str(dict["customer_phone"])," "+str(dict["status"]), " "+str(dict["items"])))
-        num+=1
 
 def print_logo(app_name):
     print("\n")
@@ -217,11 +202,7 @@ def reverse_new_product_quantities(previous_quantities:list, order_quantities:li
     return previous_quantities   
 
 def converting_tuples_into_lists(list_of_tuples:list):
-    new_list=[]
-    for tuple in list_of_tuples:
-        my_list=list(tuple)
-        new_list.append(my_list)
-    return new_list
+    return [list(tuple) for tuple in list_of_tuples]
 
 def upload_new_quantities_to_db(order_quantities:list):
     try:
