@@ -1,6 +1,4 @@
 import utilities
-import pytest
-from unittest import mock
 from unittest.mock import patch
 import csv
 
@@ -62,7 +60,7 @@ def test_clear_screen():
 @patch('builtins.print')
 def test_print_dict(mock_print): #happy path
     #assemble
-    test_dict={"la":"ba", "ra":"ta", "la":"na"}
+    test_dict={"la":"ba", "ra":"ta", "wa":"na"}
     expected = 5
     #act
     utilities.print_dict(test_dict)
