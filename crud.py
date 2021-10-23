@@ -1,6 +1,6 @@
 import utilities
 
-def add_to_db(sub_menu_item): #products and courier in db
+def add_to_db(sub_menu_item):
     utilities.clear_screen()
     if sub_menu_item == "Product":
         while True:
@@ -36,7 +36,7 @@ def add_to_db(sub_menu_item): #products and courier in db
         utilities.clear_screen()
         utilities.print_courier_position_list_pretty()
 
-def add_item(sub_menu_item, list1):    # for orders in csv
+def add_item(sub_menu_item, list1):
         while True:
             new_customer_name=input(f"Please type new {sub_menu_item.lower()} cutomer name: \n").title()
             new_customer_address=input(f"Please type new {sub_menu_item.lower()} customer address: \n").title()
