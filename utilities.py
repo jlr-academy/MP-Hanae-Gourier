@@ -5,6 +5,7 @@ from printy import printy
 import pymysql
 import os
 from dotenv import load_dotenv
+from pymysql.cursors import Cursor
 
 def import_file(product_list, courier_list, orders_list):
     open_database_product_table(product_list)
@@ -23,48 +24,26 @@ def read_csv_files(my_list, file_name):
         
 def open_database_product_table(my_list):
     try:
-        load_dotenv()
-        host = os.environ.get("mysql_host")
-        user = os.environ.get("mysql_user")
-        password = os.environ.get("mysql_pass")
-        database = os.environ.get("mysql_db")
-        connection = pymysql.connect(
-        host=host,
-        user=user,
-        password=password,
-        database=database, 
-        cursorclass=pymysql.cursors.DictCursor)
-        cursor = connection.cursor()
+        connection = connect_to_sql(pymysql.cursors.DictCursor)
+        cursor=connection.cursor()
         cursor.execute('SELECT * FROM product')
         rows = cursor.fetchall()
         for row in rows:
             my_list.append(row)
-        cursor.close()
-        connection.close()
+        close_db()
         return my_list  
     except:
         print("Failed to open product database table") 
 
 def open_database_courier_table(my_list):
     try:
-        load_dotenv()
-        host = os.environ.get("mysql_host")
-        user = os.environ.get("mysql_user")
-        password = os.environ.get("mysql_pass")
-        database = os.environ.get("mysql_db")
-        connection = pymysql.connect(
-        host=host,
-        user=user,
-        password=password,
-        database=database, 
-        cursorclass=pymysql.cursors.DictCursor)
-        cursor = connection.cursor()
+        connection = connect_to_sql(pymysql.cursors.DictCursor)
+        cursor=connection.cursor()
         cursor.execute('SELECT * FROM courier')
         rows = cursor.fetchall()
         for row in rows:
             my_list.append(row)
-        cursor.close()
-        connection.close()
+        close_db()
         return my_list  
     except:
         print("Failed to open courier database table") 
@@ -153,23 +132,13 @@ def transform_inputs_into_list(inputs):
 
 def select_quantities_from_product_table():
     try:
-        load_dotenv()
-        host = os.environ.get("mysql_host")
-        user = os.environ.get("mysql_user")
-        password = os.environ.get("mysql_pass")
-        database = os.environ.get("mysql_db")
-        connection = pymysql.connect(
-        host=host,
-        user=user,
-        password=password,
-        database=database)
-        cursor = connection.cursor()
+        connection = connect_to_sql()
+        cursor=connection.cursor()
         sql="SELECT product_id, product_quantity FROM product"
         cursor.execute(sql)
         list_of_tuples=cursor.fetchall()
         connection.commit()
-        cursor.close()
-        connection.close()
+        close_db()
         return list_of_tuples
     except:
         print("Failed to open product database table") 
@@ -206,25 +175,15 @@ def converting_tuples_into_lists(list_of_tuples:list):
 
 def upload_new_quantities_to_db(order_quantities:list):
     try:
-        load_dotenv()
-        host = os.environ.get("mysql_host")
-        user = os.environ.get("mysql_user")
-        password = os.environ.get("mysql_pass")
-        database = os.environ.get("mysql_db")
-        connection = pymysql.connect(
-        host=host,
-        user=user,
-        password=password,
-        database=database)
-        cursor = connection.cursor()
+        connection = connect_to_sql()
+        cursor=connection.cursor()
         for item in order_quantities:
             product_id=int(item[0])
             product_quantity=int(item[1])
             sql="UPDATE product set product_quantity=%s WHERE product_id=%s"
             val=(str(product_quantity), str(product_id))
             cursor.execute(sql,val)
-        connection.commit()
-        cursor.close()
+        close_db()
         connection.close()
     except:
         print("Failed to open product database table")
@@ -243,7 +202,7 @@ def update_db_quantities(amended_items_list:list):
     new_quantities= define_new_product_quantities(previous_quantities, order_quantities)
     upload_new_quantities_to_db(new_quantities)
 
-def connect_to_sql():
+def connect_to_sql(cursor_type=pymysql.cursors.Cursor):
     load_dotenv()
     host = os.environ.get("mysql_host")
     user = os.environ.get("mysql_user")
@@ -253,7 +212,8 @@ def connect_to_sql():
     host=host,
     user=user,
     password=password,
-    database=database)
+    database=database, 
+    cursor=cursor_type)
 
 def close_db(connection, cursor):
     cursor.close()

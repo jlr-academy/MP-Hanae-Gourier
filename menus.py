@@ -31,6 +31,7 @@ def process_main_menu(product_list, courier_list, orders_list):
     sys.exit()
 
 def display_sub_menu(sub_menu_item):   
+        utilities.clear_screen()
         printy(f"""
             \n                         [c]<{sub_menu_item.upper()} MENU>@\n
     Please select from the following options:\n 
@@ -46,7 +47,6 @@ def display_sub_menu(sub_menu_item):
             4. Delete {sub_menu_item.lower()}\n""")
 
 def process_sub_menu(sub_menu_item, my_list):   
-    utilities.clear_screen()
     while True:
         display_sub_menu(sub_menu_item)
         user_choice2=int(input())
