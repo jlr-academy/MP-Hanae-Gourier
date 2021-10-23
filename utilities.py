@@ -242,3 +242,19 @@ def update_db_quantities(amended_items_list:list):
     order_quantities=select_changing_quantities(amended_items_list)
     new_quantities= define_new_product_quantities(previous_quantities, order_quantities)
     upload_new_quantities_to_db(new_quantities)
+
+def connect_to_sql():
+    load_dotenv()
+    host = os.environ.get("mysql_host")
+    user = os.environ.get("mysql_user")
+    password = os.environ.get("mysql_pass")
+    database = os.environ.get("mysql_db")
+    return pymysql.connect(
+    host=host,
+    user=user,
+    password=password,
+    database=database)
+
+def close_db(connection, cursor):
+    cursor.close()
+    connection.close()   

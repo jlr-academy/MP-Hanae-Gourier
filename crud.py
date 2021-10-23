@@ -1,29 +1,4 @@
 import utilities
-import pymysql
-import os
-from dotenv import load_dotenv
-
-def connect_to_sql():
-    load_dotenv()
-    host = os.environ.get("mysql_host")
-    user = os.environ.get("mysql_user")
-    password = os.environ.get("mysql_pass")
-    database = os.environ.get("mysql_db")
-    return pymysql.connect(
-    host=host,
-    user=user,
-    password=password,
-    database=database)
-
-def close_db(connection, cursor):
-    cursor.close()
-    connection.close()    
-
-# def insert_to_db(connection, cursor):
-#     sql="INSERT INTO product (product_name, product_price, product_quantity) VALUES (%s, %s, %s)"
-#     val=(str(new_item_name), str(new_item_price), str(new_item_quantity))
-#     cursor.execute(sql,val)
-#     connection.commit()
 
 def add_to_db(sub_menu_item): #products and courier in db
     utilities.clear_screen()
@@ -33,13 +8,12 @@ def add_to_db(sub_menu_item): #products and courier in db
             new_item_price=float(input(f"Please type new {sub_menu_item.lower()} price in GBP: \n"))
             new_item_quantity=int(input(f"Please type new {sub_menu_item.lower()} quantity: \n"))
             try:
-                connection = connect_to_sql()
+                connection = utilities.connect_to_sql()
                 cursor=connection.cursor()
-                sql="INSERT INTO product (product_name, product_price, product_quantity) VALUES (%s, %s, %s)"
-                val=(str(new_item_name), str(new_item_price), str(new_item_quantity))
-                cursor.execute(sql,val)
+                cursor.execute("INSERT INTO product (product_name, product_price, product_quantity) VALUES (%s, %s, %s)",
+                    (str(new_item_name), str(new_item_price), str(new_item_quantity)))
                 connection.commit()
-                close_db(connection, cursor)
+                utilities.close_db(connection, cursor)
             except:
                 print("Failed to open product database table") 
             break
@@ -50,14 +24,12 @@ def add_to_db(sub_menu_item): #products and courier in db
             new_item_name=input(f"Please type new {sub_menu_item.lower()} name: \n").title()
             new_item_phone=input(f"Please type new {sub_menu_item.lower()} phone: \n")
             try:
-                connection = connect_to_sql()
+                connection = utilities.connect_to_sql()
                 cursor=connection.cursor()
-                sql="INSERT INTO courier (courier_name, courier_phone) VALUES (%s, %s)"
-                val=(str(new_item_name), str(new_item_phone))
-                cursor.execute(sql,val)
+                cursor.execute("INSERT INTO courier (courier_name, courier_phone) VALUES (%s, %s)",
+                    (str(new_item_name), str(new_item_phone)))
                 connection.commit()
-                cursor.close()
-                connection.close()
+                utilities.close_db(connection, cursor)
             except:
                 print("Failed to open courier database table") 
             break
@@ -90,7 +62,7 @@ def update_product():
     while True:
         utilities.print_product_position_list_pretty() 
         try:
-            connection = connect_to_sql()
+            connection = utilities.connect_to_sql()
             cursor=connection.cursor()
             modified_dict_index=int(input(f"\n Please input index of the product to be modified: "))
             sql=('SELECT * FROM product WHERE product_id = %s')
@@ -118,8 +90,7 @@ def update_product():
                 val=(modified_product_quantity, str(modified_dict_index))
                 cursor.execute(sql,val)
                 connection.commit()
-            cursor.close()
-            connection.close()
+            utilities.close_db(connection, cursor)
         except:
             print("Failed to open product database table")
         break
@@ -131,7 +102,7 @@ def update_courier():
     while True:
         utilities.print_courier_position_list_pretty() 
         try:
-            connection = connect_to_sql()
+            connection = utilities.connect_to_sql()
             cursor=connection.cursor()
             modified_dict_index=int(input(f"\n Please input index of the courier to be modified: "))
             sql=('SELECT * FROM courier WHERE courier_id = %s')
@@ -153,8 +124,7 @@ def update_courier():
                 val=(modified_courier_phone, str(modified_dict_index))
                 cursor.execute(sql,val)
                 connection.commit()
-            cursor.close()
-            connection.close()
+            utilities.close_db(connection, cursor)
         except:
             print("Failed to open courier database table")
         break
@@ -217,7 +187,7 @@ def delete_product():
     while True:
         utilities.print_product_position_list_pretty() 
         try:
-            connection = connect_to_sql()
+            connection = utilities.connect_to_sql()
             cursor=connection.cursor()
             modified_dict_index=int(input(f"\n Please input index of the product to be deleted: "))
             confirmation=input(f"Are you sure you want to delete this product? Please select Y to confirm: ")
@@ -226,12 +196,10 @@ def delete_product():
                 val=(str(modified_dict_index))
                 cursor.execute(sql,val)
                 connection.commit()
-                cursor.close()
-                connection.close()
+                utilities.close_db(connection, cursor)
             else:
                 connection.commit()
-                cursor.close()
-                connection.close()
+                utilities.close_db(connection, cursor)
                 break
         except:
             print("Failed to open product database table")
@@ -244,7 +212,7 @@ def delete_courier():
     while True:
         utilities.print_courier_position_list_pretty() 
         try:
-            connection = connect_to_sql()
+            connection = utilities.connect_to_sql()
             cursor=connection.cursor()
             modified_dict_index=int(input(f"\n Please input index of the courier to be deleted: "))
             confirmation=input(f"Are you sure you want to delete this product? Please select Y to confirm: ")
@@ -253,12 +221,10 @@ def delete_courier():
                 val=(str(modified_dict_index))
                 cursor.execute(sql,val)
                 connection.commit()
-                cursor.close()
-                connection.close()
+                utilities.close_db(connection, cursor)
             else:
                 connection.commit()
-                cursor.close()
-                connection.close()
+                utilities.close_db(connection, cursor)
                 break
         except:
             print("Failed to open courier database table")
