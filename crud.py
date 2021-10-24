@@ -1,11 +1,9 @@
 import utilities
-from dotenv import load_dotenv
 
 
-def add_item(sub_menu_item, list1):
+def add_product(sub_menu_item):
     utilities.clear_screen()
-    if sub_menu_item == "Product":
-        while True:
+    while True:
             new_item_name = input(
                 f"Please type new {sub_menu_item.lower()} name: \n").title()
             new_item_price = float(
@@ -24,54 +22,58 @@ def add_item(sub_menu_item, list1):
             except Exception as e:
                 print(f"Failed to open product database table. Error is: {e}")
             break
-        utilities.clear_screen()
-        utilities.print_product_position_list_pretty()
-    elif sub_menu_item == "Courier":
-        while True:
-            new_item_name = input(
-                f"Please type new {sub_menu_item.lower()} name: \n").title()
-            new_item_phone = input(
-                f"Please type new {sub_menu_item.lower()} phone: \n")
-            try:
-                connection = utilities.connect_to_db()
-                cursor = connection.cursor()
-                sql = "INSERT INTO courier (courier_name, courier_phone) VALUES (%s, %s)"
-                val = (str(new_item_name), str(new_item_phone))
-                cursor.execute(sql, val)
-                connection.commit()
-                utilities.close_db(cursor, connection)
-            except Exception as e:
-                print(f"Failed to open courier database table. Error is: {e}")
-            break
-        utilities.clear_screen()
+    utilities.clear_screen()
+    utilities.print_product_position_list_pretty()
+
+
+def add_courier(sub_menu_item):
+    while True:
+        new_item_name = input(
+            f"Please type new {sub_menu_item.lower()} name: \n").title()
+        new_item_phone = input(
+            f"Please type new {sub_menu_item.lower()} phone: \n")
+        try:
+            connection = utilities.connect_to_db()
+            cursor = connection.cursor()
+            sql = "INSERT INTO courier (courier_name, courier_phone) VALUES (%s, %s)"
+            val = (str(new_item_name), str(new_item_phone))
+            cursor.execute(sql, val)
+            connection.commit()
+            utilities.close_db(cursor, connection)
+        except Exception as e:
+            print(f"Failed to open courier database table. Error is: {e}")
+        break
+    utilities.clear_screen()
+    utilities.print_courier_position_list_pretty()
+
+
+def add_courier(sub_menu_item, list1):
+    while True:
+        new_customer_name = input(
+            f"Please type new {sub_menu_item.lower()} cutomer name: \n").title()
+        new_customer_address = input(
+            f"Please type new {sub_menu_item.lower()} customer address: \n").title()
+        new_customer_phone = input(
+            f"Please type new {sub_menu_item.lower()} customer phone: \n")
         utilities.print_courier_position_list_pretty()
-    elif sub_menu_item == "Orders":
-        while True:
-            new_customer_name = input(
-                f"Please type new {sub_menu_item.lower()} cutomer name: \n").title()
-            new_customer_address = input(
-                f"Please type new {sub_menu_item.lower()} customer address: \n").title()
-            new_customer_phone = input(
-                f"Please type new {sub_menu_item.lower()} customer phone: \n")
-            utilities.print_courier_position_list_pretty()
-            new_courier = input(
-                "\n Please input index of courier chosen for this order: ")
-            status_list = ["PLACED", "PREPARING","BEING DELIVERED", "DELIVERED", "CANCELLED"]
-            utilities.print_position_list(status_list)
-            new_status_index = int(
-                input(f"\n Please type index of order status: \n").upper())
-            new_status_value = status_list[new_status_index]
-            utilities.print_product_position_list_pretty()
-            new_items = input(
-                f"Please type index of products to be added to order. To add more than one item, please separate indices with a space: \n")
-            new_items_list = utilities.transform_inputs_into_list(new_items)
-            utilities.update_db_quantities(new_items_list)
-            new_dict = {"customer_name": new_customer_name, "customer_address": new_customer_address,
-                        "customer_phone": new_customer_phone, "courier": new_courier, "status": new_status_value, "items": new_items}
-            list1.append(new_dict)
-            utilities.clear_screen()
-            utilities.print_orders_position_list_pretty(list1)
-            break
+        new_courier = input(
+            "\n Please input index of courier chosen for this order: ")
+        status_list = ["PLACED", "PREPARING","BEING DELIVERED", "DELIVERED", "CANCELLED"]
+        utilities.print_position_list(status_list)
+        new_status_index = int(
+            input(f"\n Please type index of order status: \n").upper())
+        new_status_value = status_list[new_status_index]
+        utilities.print_product_position_list_pretty()
+        new_items = input(
+            f"Please type index of products to be added to order. To add more than one item, please separate indices with a space: \n")
+        new_items_list = utilities.transform_inputs_into_list(new_items)
+        utilities.update_db_quantities(new_items_list)
+        new_dict = {"customer_name": new_customer_name, "customer_address": new_customer_address,
+                    "customer_phone": new_customer_phone, "courier": new_courier, "status": new_status_value, "items": new_items}
+        list1.append(new_dict)
+        utilities.clear_screen()
+        utilities.print_orders_position_list_pretty(list1)
+        break
 
 
 def update_product():

@@ -63,7 +63,12 @@ def sub_menu(sub_menu_item, list1):
             else:
                 utilities.print_courier_position_list_pretty()
         elif user_choice2 == 2:
-            crud.add_item(sub_menu_item, list1)
+            if sub_menu_item == "Product":
+                crud.add_product(sub_menu_item)
+            elif sub_menu_item == "Courier":
+                crud.add_courier(sub_menu_item)
+            else:
+                crud.add_order(sub_menu_item, list1)
         elif user_choice2 == 3:
             if sub_menu_item == "Orders":
                 crud.update_order_status(sub_menu_item, list1)
