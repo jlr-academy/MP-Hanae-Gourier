@@ -1,6 +1,4 @@
 import utilities
-import pymysql
-import os
 from dotenv import load_dotenv
 
 
@@ -15,24 +13,14 @@ def add_item(sub_menu_item, list1):
             new_item_quantity = int(
                 input(f"Please type new {sub_menu_item.lower()} quantity: \n"))
             try:
-                load_dotenv()
-                host = os.environ.get("mysql_host")
-                user = os.environ.get("mysql_user")
-                password = os.environ.get("mysql_pass")
-                database = os.environ.get("mysql_db")
-                connection = pymysql.connect(
-                    host=host,
-                    user=user,
-                    password=password,
-                    database=database)
+                connection = utilities.connect_to_db()
                 cursor = connection.cursor()
                 sql = "INSERT INTO product (product_name, product_price, product_quantity) VALUES (%s, %s, %s)"
                 val = (str(new_item_name), str(
                     new_item_price), str(new_item_quantity))
                 cursor.execute(sql, val)
                 connection.commit()
-                cursor.close()
-                connection.close()
+                utilities.close_db(cursor,connection)
             except Exception as e:
                 print(f"Failed to open product database table. Error is: {e}")
             break
@@ -45,23 +33,13 @@ def add_item(sub_menu_item, list1):
             new_item_phone = input(
                 f"Please type new {sub_menu_item.lower()} phone: \n")
             try:
-                load_dotenv()
-                host = os.environ.get("mysql_host")
-                user = os.environ.get("mysql_user")
-                password = os.environ.get("mysql_pass")
-                database = os.environ.get("mysql_db")
-                connection = pymysql.connect(
-                    host=host,
-                    user=user,
-                    password=password,
-                    database=database)
+                connection = utilities.connect_to_db()
                 cursor = connection.cursor()
                 sql = "INSERT INTO courier (courier_name, courier_phone) VALUES (%s, %s)"
                 val = (str(new_item_name), str(new_item_phone))
                 cursor.execute(sql, val)
                 connection.commit()
-                cursor.close()
-                connection.close()
+                utilities.close_db(cursor, connection)
             except Exception as e:
                 print(f"Failed to open courier database table. Error is: {e}")
             break
@@ -78,8 +56,7 @@ def add_item(sub_menu_item, list1):
             utilities.print_courier_position_list_pretty()
             new_courier = input(
                 "\n Please input index of courier chosen for this order: ")
-            status_list = ["PLACED", "PREPARING",
-                           "BEING DELIVERED", "DELIVERED", "CANCELLED"]
+            status_list = ["PLACED", "PREPARING","BEING DELIVERED", "DELIVERED", "CANCELLED"]
             utilities.print_position_list(status_list)
             new_status_index = int(
                 input(f"\n Please type index of order status: \n").upper())
@@ -102,16 +79,7 @@ def update_product():
     while True:
         utilities.print_product_position_list_pretty()
         try:
-            load_dotenv()
-            host = os.environ.get("mysql_host")
-            user = os.environ.get("mysql_user")
-            password = os.environ.get("mysql_pass")
-            database = os.environ.get("mysql_db")
-            connection = pymysql.connect(
-                host=host,
-                user=user,
-                password=password,
-                database=database)
+            connection = utilities.connect_to_db()
             cursor = connection.cursor()
             modified_dict_index = int(
                 input(f"\n Please input index of the product to be modified: "))
@@ -145,8 +113,7 @@ def update_product():
                 val = (modified_product_quantity, str(modified_dict_index))
                 cursor.execute(sql, val)
                 connection.commit()
-            cursor.close()
-            connection.close()
+            utilities.close_db(cursor, connection)
         except Exception as e:
             print(f"Failed to open product database table. Error is: {e}")
         break
@@ -159,16 +126,7 @@ def update_courier():
     while True:
         utilities.print_courier_position_list_pretty()
         try:
-            load_dotenv()
-            host = os.environ.get("mysql_host")
-            user = os.environ.get("mysql_user")
-            password = os.environ.get("mysql_pass")
-            database = os.environ.get("mysql_db")
-            connection = pymysql.connect(
-                host=host,
-                user=user,
-                password=password,
-                database=database)
+            connection = utilities.connect_to_db()
             cursor = connection.cursor()
             modified_dict_index = int(
                 input(f"\n Please input index of the courier to be modified: "))
@@ -195,8 +153,7 @@ def update_courier():
                 val = (modified_courier_phone, str(modified_dict_index))
                 cursor.execute(sql, val)
                 connection.commit()
-            cursor.close()
-            connection.close()
+            utilities.close_db(cursor, connection)
         except Exception as e:
             print(f"Failed to open courier database table. Error is: {e}")
         break
@@ -213,8 +170,7 @@ def update_order_status(sub_menu_item, my_list):
         if modified_dict_index >= len(my_list):
             print("\n Error, number not available in list\n")
         else:
-            status_list = ["PLACED", "PREPARING",
-                           "BEING DELIVERED", "DELIVERED", "CANCELLED"]
+            status_list = ["PLACED", "PREPARING","BEING DELIVERED", "DELIVERED", "CANCELLED"]
             utilities.print_position_list(status_list)
             modified_item_index = int(
                 input('\n Please input index of new status: \n')) - 1
@@ -290,16 +246,7 @@ def delete_product():
     while True:
         utilities.print_product_position_list_pretty()
         try:
-            load_dotenv()
-            host = os.environ.get("mysql_host")
-            user = os.environ.get("mysql_user")
-            password = os.environ.get("mysql_pass")
-            database = os.environ.get("mysql_db")
-            connection = pymysql.connect(
-                host=host,
-                user=user,
-                password=password,
-                database=database)
+            connection = utilities.connect_to_db()
             cursor = connection.cursor()
             modified_dict_index = int(
                 input(f"\n Please input index of the product to be deleted: "))
@@ -310,12 +257,10 @@ def delete_product():
                 val = (str(modified_dict_index))
                 cursor.execute(sql, val)
                 connection.commit()
-                cursor.close()
-                connection.close()
+                utilities.close_db(cursor, connection)
             else:
                 connection.commit()
-                cursor.close()
-                connection.close()
+                utilities.close_db(cursor, connection)
                 break
         except Exception as e:
             print(f"Failed to open product database table. Error is: {e}")
@@ -329,16 +274,7 @@ def delete_courier():
     while True:
         utilities.print_courier_position_list_pretty()
         try:
-            load_dotenv()
-            host = os.environ.get("mysql_host")
-            user = os.environ.get("mysql_user")
-            password = os.environ.get("mysql_pass")
-            database = os.environ.get("mysql_db")
-            connection = pymysql.connect(
-                host=host,
-                user=user,
-                password=password,
-                database=database)
+            connection = utilities.connect_to_db()
             cursor = connection.cursor()
             modified_dict_index = int(
                 input(f"\n Please input index of the courier to be deleted: "))
@@ -349,12 +285,10 @@ def delete_courier():
                 val = (str(modified_dict_index))
                 cursor.execute(sql, val)
                 connection.commit()
-                cursor.close()
-                connection.close()
+                utilities.close_db(cursor, connection)
             else:
                 connection.commit()
-                cursor.close()
-                connection.close()
+                utilities.close_db(cursor, connection)
                 break
         except Exception as e:
             print(f"Failed to open courier database table. Error is: {e}")

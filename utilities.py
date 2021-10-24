@@ -26,24 +26,13 @@ def read_csv_files(my_list, file_name):
 
 def open_database_product_table(my_list):
     try:
-        load_dotenv()
-        host = os.environ.get("mysql_host")
-        user = os.environ.get("mysql_user")
-        password = os.environ.get("mysql_pass")
-        database = os.environ.get("mysql_db")
-        connection = pymysql.connect(
-            host=host,
-            user=user,
-            password=password,
-            database=database,
-            cursorclass=pymysql.cursors.DictCursor)
+        connection = connect_to_db(cursorclass=pymysql.cursors.DictCursor)
         cursor = connection.cursor()
         cursor.execute('SELECT * FROM product')
         rows = cursor.fetchall()
         for row in rows:
             my_list.append(row)
-        cursor.close()
-        connection.close()
+        close_db(cursor, connection)
         return my_list
     except Exception as e:
         print(f"Failed to open product database table. Error is: {e}")
@@ -51,32 +40,20 @@ def open_database_product_table(my_list):
 
 def open_database_courier_table(my_list):
     try:
-        load_dotenv()
-        host = os.environ.get("mysql_host")
-        user = os.environ.get("mysql_user")
-        password = os.environ.get("mysql_pass")
-        database = os.environ.get("mysql_db")
-        connection = pymysql.connect(
-            host=host,
-            user=user,
-            password=password,
-            database=database,
-            cursorclass=pymysql.cursors.DictCursor)
+        connection = connect_to_db(cursorclass=pymysql.cursors.DictCursor)
         cursor = connection.cursor()
         cursor.execute('SELECT * FROM courier')
         rows = cursor.fetchall()
         for row in rows:
             my_list.append(row)
-        cursor.close()
-        connection.close()
+        close_db(cursor, connection)
         return my_list
     except Exception as e:
         print(f"Failed to open courier database table. Error is: {e}")
 
 
 def save_list(orders_list):
-    export_to_csv(orders_list, "orders.csv", [
-                  "customer_name", "customer_address", "customer_phone", "courier", "status", "items"])
+    export_to_csv(orders_list, "orders.csv", ["customer_name", "customer_address", "customer_phone", "courier", "status", "items"])
 
 
 def export_to_csv(list, file_name, field_names):
@@ -113,8 +90,7 @@ def print_position_list(my_list):
 
 def print_product_position_list_pretty():
     my_list = open_database_product_table([])
-    printy("\n{:<10} {:<25} {:<20} {:<25}".format('Index', 'Product Name',
-           'Product Price (GBP)', 'Product Quantity(Units)'), 'y>B')
+    printy("\n{:<10} {:<25} {:<20} {:<25}".format('Index', 'Product Name','Product Price (GBP)', 'Product Quantity(Units)'), 'y>B')
     for dict in my_list:
         formatted_price = format((float(dict["product_price"])), ".2f")
         print("{:<10} {:<25} {:<20} {:<25}".format(
@@ -131,11 +107,9 @@ def print_courier_position_list_pretty():
 
 
 def print_orders_position_list_pretty(my_list):
-    printy("\n{:<8} {:<18} {:<50} {:<17} {:<10} {:<17} {:<9}".format('Index', 'Customer Name',
-           'Customer Address', 'Customer Phone', 'Courier', 'Status', 'Items Ordered'), 'y>B')
+    printy("\n{:<8} {:<18} {:<50} {:<17} {:<10} {:<17} {:<9}".format('Index', 'Customer Name','Customer Address', 'Customer Phone', 'Courier', 'Status', 'Items Ordered'), 'y>B')
     for num, dict in enumerate(my_list, start=1):
-        print("{:<8} {:<18} {:<50} {:<17} {:<10} {:<17} {:<9}".format("  "+str(num),
-              dict["customer_name"], dict["customer_address"], dict["customer_phone"], "   "+str(dict["courier"]), dict["status"], dict["items"]))
+        print("{:<8} {:<18} {:<50} {:<17} {:<10} {:<17} {:<9}".format("  "+str(num),dict["customer_name"], dict["customer_address"], dict["customer_phone"], "   "+str(dict["courier"]), dict["status"], dict["items"]))
 
 
 def print_any_position_list_pretty(sub_menu_item, my_list):
@@ -154,8 +128,7 @@ def get_list_of_dict_keys(dict):
 def print_orders_position_list_by_status_pretty(my_list):
     list_of_orders_by_status = sorted(
         my_list, key=lambda category: category["status"])
-    printy("\n {:<17} {:<8} {:<18} {:<50} {:<17} {:<10} {:<9}".format('Status', 'Index',
-           'Customer Name', 'Customer Address', 'Customer Phone', 'Courier', 'Items Ordered'), 'y>B')
+    printy("\n {:<17} {:<8} {:<18} {:<50} {:<17} {:<10} {:<9}".format('Status', 'Index','Customer Name', 'Customer Address', 'Customer Phone', 'Courier', 'Items Ordered'), 'y>B')
     for num, dict in enumerate(list_of_orders_by_status, start=1):
         print("{:<17} {:<8} {:<18} {:<50} {:<17} {:<10} {:<9}".format(" "+str(dict["status"]), "  "+str(num), " "+str(dict["customer_name"]), " "+str(
             dict["customer_address"]), " "+str(dict["customer_phone"]), "   "+str(dict["courier"]), " "+str(dict["items"])))
@@ -164,8 +137,7 @@ def print_orders_position_list_by_status_pretty(my_list):
 def print_orders_position_list_by_courier_pretty(my_list):
     list_of_orders_by_courier = sorted(
         my_list, key=lambda category: category["courier"])
-    printy("\n {:<10} {:<8} {:<18} {:<50} {:<17} {:<17} {:<9}".format('Courier', 'Index',
-           'Customer Name', 'Customer Address', 'Customer Phone', 'Status', 'Items Ordered'), 'y>B')
+    printy("\n {:<10} {:<8} {:<18} {:<50} {:<17} {:<17} {:<9}".format('Courier', 'Index','Customer Name', 'Customer Address', 'Customer Phone', 'Status', 'Items Ordered'), 'y>B')
     for num, dict in enumerate(list_of_orders_by_courier, start=1):
         print("{:<10} {:<8} {:<18} {:<50} {:<17} {:<17} {:<9}".format("   "+str(dict["courier"]), "  "+str(num), " "+str(
             dict["customer_name"]), " "+str(dict["customer_address"]), " "+str(dict["customer_phone"]), " "+str(dict["status"]), " "+str(dict["items"])))
@@ -186,23 +158,13 @@ def transform_inputs_into_list(inputs):
 
 def select_quantities_from_product_table():
     try:
-        load_dotenv()
-        host = os.environ.get("mysql_host")
-        user = os.environ.get("mysql_user")
-        password = os.environ.get("mysql_pass")
-        database = os.environ.get("mysql_db")
-        connection = pymysql.connect(
-            host=host,
-            user=user,
-            password=password,
-            database=database)
+        connection = connect_to_db()
         cursor = connection.cursor()
         sql = "SELECT product_id, product_quantity FROM product"
         cursor.execute(sql)
         list_of_tuples = cursor.fetchall()
         connection.commit()
-        cursor.close()
-        connection.close()
+        close_db(cursor, connection)
         return list_of_tuples
     except Exception as e:
         print(f"Failed to open product database table. Error is: {e}")
@@ -245,15 +207,7 @@ def converting_tuples_into_lists(list_of_tuples: list):
 def upload_new_quantities_to_db(order_quantities: list):
     try:
         load_dotenv()
-        host = os.environ.get("mysql_host")
-        user = os.environ.get("mysql_user")
-        password = os.environ.get("mysql_pass")
-        database = os.environ.get("mysql_db")
-        connection = pymysql.connect(
-            host=host,
-            user=user,
-            password=password,
-            database=database)
+        connection = connect_to_db()
         cursor = connection.cursor()
         for item in order_quantities:
             product_id = int(item[0])
@@ -262,8 +216,7 @@ def upload_new_quantities_to_db(order_quantities: list):
             val = (str(product_quantity), str(product_id))
             cursor.execute(sql, val)
         connection.commit()
-        cursor.close()
-        connection.close()
+        close_db(cursor, connection)
     except Exception as e:
         print(f"Failed to open product database table. Error is: {e}")
 
@@ -288,5 +241,20 @@ def update_db_quantities(amended_items_list: list):
     upload_new_quantities_to_db(new_quantities)
 
 
-def connect_to_db():
-    pass
+def connect_to_db(cursorclass = pymysql.cursors.Cursor):
+    load_dotenv()
+    host = os.environ.get("mysql_host")
+    user = os.environ.get("mysql_user")
+    password = os.environ.get("mysql_pass")
+    database = os.environ.get("mysql_db")
+    return pymysql.connect(
+        host=host,
+        user=user,
+        password=password,
+        database=database,
+        cursorclass = cursorclass)
+
+
+def close_db(cursor, connection):
+    cursor.close()
+    connection.close()
