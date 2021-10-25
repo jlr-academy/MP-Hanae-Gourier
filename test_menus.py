@@ -17,4 +17,4 @@ def test_main_menu_option_0(mock_input):
     }]
     # act and assert
     with pytest.raises(SystemExit):
-        menus.main_menu(product_list, courier_list, orders_list)
+        menus.process_main_menu(product_list, courier_list, orders_list)

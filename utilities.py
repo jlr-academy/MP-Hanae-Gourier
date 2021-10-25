@@ -33,7 +33,7 @@ def open_database_product_table(my_list):
         for row in rows:
             my_list.append(row)
         close_db(cursor, connection)
-        return my_list
+        return (my_list)
     except Exception as e:
         print(f"Failed to open product database table. Error is: {e}")
 
@@ -123,6 +123,16 @@ def print_any_position_list_pretty(sub_menu_item, my_list):
 
 def get_list_of_dict_keys(dict):
     return [key for key in dict.keys()]
+
+
+def get_list_of_product_keys_from_db():
+    my_list = open_database_product_table([])
+    return [my_dict['product_id'] for my_dict in my_list]
+
+
+def get_list_of_courier_keys_from_db():
+    my_list = open_database_courier_table([])
+    return [my_dict['courier_id'] for my_dict in my_list]
 
 
 def print_orders_position_list_by_status_pretty(my_list):
@@ -258,3 +268,16 @@ def connect_to_db(cursorclass = pymysql.cursors.Cursor):
 def close_db(cursor, connection):
     cursor.close()
     connection.close()
+
+
+def show_error_if_index_not_in_option_list(my_index, my_list):
+    if my_index not in my_list:
+        print("Error, this courier does not exist, please try again.")
+        return True
+
+
+def show_error_if_indices_not_in_option_list(list_of_indices, my_list):
+    for my_index in list_of_indices:
+        if my_index not in my_list:
+            print("Error, you have selected one or more products that do not exist, please try again")
+            return True

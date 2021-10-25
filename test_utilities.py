@@ -183,3 +183,65 @@ def test_converting_tuples_into_lists(): #happy path
     actual=utilities.converting_tuples_into_lists(my_list_of_tuples)
     #assert
     assert actual == expected
+
+
+@patch('builtins.print')
+def test_show_error_if_index_not_in_option_list1(mock_print): #unhappy path
+    #assemble
+    my_list=[3, 4, 29]
+    my_index=29
+    expected = 0
+    #act
+    utilities.show_error_if_index_not_in_option_list(my_index, my_list)
+    #assert
+    assert mock_print.call_count == expected
+
+@patch('builtins.print')
+def test_show_error_if_index_not_in_option_list2(mock_print): #happy path
+    #assemble
+    my_list=[3, 4, 29]
+    my_index=28
+    #act
+    utilities.show_error_if_index_not_in_option_list(my_index, my_list)
+    #assert
+    assert mock_print.call_count == 1
+
+@patch('builtins.print')
+def test_show_error_if_indices_not_in_option_list1(mock_print): #unhappy path
+    #assemble
+    my_list=[3, 4, 29]
+    my_indices=[3, 29]
+    #act
+    utilities.show_error_if_indices_not_in_option_list(my_indices, my_list)
+    #assert
+    assert mock_print.call_count == 0
+
+@patch('builtins.print')
+def test_show_error_if_indices_not_in_option_list2(mock_print): #happy path
+    #assemble
+    my_list=[3, 4, 29]
+    list_of_my_indices=[3, 4, 28]
+    #act
+    utilities.show_error_if_indices_not_in_option_list(list_of_my_indices, my_list)
+    #assert
+    assert mock_print.call_count == 1
+
+@patch('builtins.print')
+def test_show_error_if_indices_not_in_option_list3(mock_print): #happy path
+    #assemble
+    my_list=[3, 4, 29]
+    list_of_indices=[2, 4, 28]
+    #act
+    utilities.show_error_if_indices_not_in_option_list(list_of_indices, my_list)
+    #assert
+    assert mock_print.call_count == 1
+
+@patch('builtins.print')
+def test_show_error_if_indices_not_in_option_list4(mock_print): #unhappy path
+    #assemble
+    my_list=[3, 4, 29]
+    list_of_indices=[3, 4]
+    #act
+    utilities.show_error_if_indices_not_in_option_list(list_of_indices, my_list)
+    #assert
+    assert mock_print.call_count == 0
