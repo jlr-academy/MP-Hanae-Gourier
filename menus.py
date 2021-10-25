@@ -11,10 +11,11 @@ def display_main_menu():
         0. Exit application
         1. Product menu options
         2. Courier menu options
-        3. Orders menu options\n""")
+        3. Orders menu options
+        4. Customer menu options\n""")
 
 
-def process_main_menu(product_list, courier_list, orders_list):
+def process_main_menu(product_list, courier_list, orders_list, customer_list):
     while True:
         display_main_menu()
         user_choice1 = int(input())
@@ -27,6 +28,8 @@ def process_main_menu(product_list, courier_list, orders_list):
             sub_menu("Courier", courier_list)
         elif user_choice1 == 3:
             sub_menu("Orders", orders_list)
+        elif user_choice1 == 4:
+            sub_menu("Customer", customer_list)
         else:
             print(
                 "User entry not recognised, program will now exit. Thank you for visiting!")

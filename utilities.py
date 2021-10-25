@@ -5,12 +5,13 @@ from printy import printy
 import pymysql
 import os
 from dotenv import load_dotenv
+import itertools
 
-
-def import_file(product_list, courier_list, orders_list):
+def import_file(product_list, courier_list, orders_list, customer_list):
     open_database_product_table(product_list)
     open_database_courier_table(courier_list)
-    read_csv_files(orders_list, "orders.csv")
+    open_database_order_table(orders_list)
+    open_database_customer_table(customer_list)
 
 
 def read_csv_files(my_list, file_name):
@@ -52,8 +53,63 @@ def open_database_courier_table(my_list):
         print(f"Failed to open courier database table. Error is: {e}")
 
 
-def save_list(orders_list):
+def open_database_customer_table(my_list):
+    try:
+        connection = connect_to_db(cursorclass=pymysql.cursors.DictCursor)
+        cursor = connection.cursor()
+        cursor.execute('SELECT * FROM customer')
+        rows = cursor.fetchall()
+        for row in rows:
+            my_list.append(row)
+        close_db(cursor, connection)
+        return my_list
+    except Exception as e:
+        print(f"Failed to open customer database table. Error is: {e}")
+
+
+def open_database_intermediate_order_table(my_list):
+    try:
+        connection = connect_to_db(cursorclass=pymysql.cursors.DictCursor)
+        cursor = connection.cursor()
+        cursor.execute('SELECT * FROM order_items')
+        rows = cursor.fetchall()
+        for row in rows:
+            my_list.append(row)
+        close_db(cursor, connection)
+        return my_list
+    except Exception as e:
+        print(f"Failed to open intermediate order database table. Error is: {e}")
+
+
+def open_database_order_table(my_list):
+    try:
+        connection = connect_to_db(cursorclass=pymysql.cursors.DictCursor)
+        cursor = connection.cursor()
+        cursor.execute('SELECT o.order_id, c.customer_name, c.customer_address, c.customer_phone, o.courier_id, d.delivery_status FROM ordeer o LEFT JOIN customer c ON o.customer_id = c.customer_id LEFT JOIN delivery_status d ON o.status_id = d.status_id')
+        rows = cursor.fetchall()
+        for row in rows:
+            my_list.append(row)
+        close_db(cursor, connection)
+        return my_list
+    except Exception as e:
+        print(f"Failed to open order database table. Error is: {e}")
+
+
+def create_orders_lists_from_db(interm_list, order_list):
+    interm_list = group_interm_orders(interm_list) #[{'order_id': 1, 'product_id': [6, 19, 19]}, {'order_id': 3, 'product_id': [5, 19, 5]}, {'order_id': 4, 'product_id': [3]}]
+    i=0
+    for my_dict in order_list: #[{'order_id': 1, 'customer_name': 'Elizabeth Windsor', 'customer_address': '1 Buckingham Avenue, London', 'customer_phone': '07896534236', 'courier_id': 1, 'delivery_status': 'Placed'}, {'order_id': 3, 'customer_name': 'David Attenborough', 'customer_address': '5 Regency Road, London', 'customer_phone': '07645384956', 'courier_id': 4, 'delivery_status': 'Placed'}, {'order_id': 4, 'customer_name': 'Bear Grylls', 'customer_address': '23 Limestreet, London', 'customer_phone': '07635774626', 'courier_id': 7, 'delivery_status': 'Being Delivered'}]
+        [new_list]=interm_list[i]["product_id"]
+        my_dict.update({"items":new_list})
+        i+=1
+    print(order_list)
+
+
+def save_list(orders_list, product_list, courier_list, customer_list):
     export_to_csv(orders_list, "orders.csv", ["customer_name", "customer_address", "customer_phone", "courier", "status", "items"])
+    export_to_csv(product_list, "product.csv", ["product_id", "product_name", "product_price", "product_quantity"])
+    export_to_csv(courier_list, "courier.csv", ["courier_id", "courier_name", "courier_phone"])
+    export_to_csv(customer_list, "customer.csv", ["customer_id", "customer_name", "customer_address", "customer_phone"])
 
 
 def export_to_csv(list, file_name, field_names):
@@ -106,19 +162,31 @@ def print_courier_position_list_pretty():
             "  "+str(dict["courier_id"]), dict["courier_name"], "     "+str(dict["courier_phone"])))
 
 
+def print_customer_position_list_pretty():
+    my_list = open_database_customer_table([])
+    printy("\n{:<10} {:<25} {:<50} {:<10}".format(
+        'Index', 'Customer Name', 'Customer Address', 'Customer Phone Number'), 'y>B')
+    for dict in my_list:
+        print("{:<10} {:<25} {:<50} {:<10}".format(
+            "  "+str(dict["customer_id"]), dict["customer_name"], dict["customer_address"], "     "+str(dict["courier_phone"])))
+
+
 def print_orders_position_list_pretty(my_list):
+    my_list = open_database_order_table([])
     printy("\n{:<8} {:<18} {:<50} {:<17} {:<10} {:<17} {:<9}".format('Index', 'Customer Name','Customer Address', 'Customer Phone', 'Courier', 'Status', 'Items Ordered'), 'y>B')
     for num, dict in enumerate(my_list, start=1):
         print("{:<8} {:<18} {:<50} {:<17} {:<10} {:<17} {:<9}".format("  "+str(num),dict["customer_name"], dict["customer_address"], dict["customer_phone"], "   "+str(dict["courier"]), dict["status"], dict["items"]))
 
 
-def print_any_position_list_pretty(sub_menu_item, my_list):
+def print_any_position_list_pretty(sub_menu_item):
     if sub_menu_item == "Product":
         print_product_position_list_pretty()
     elif sub_menu_item == "Courier":
         print_courier_position_list_pretty()
     elif sub_menu_item == "Orders":
-        print_orders_position_list_pretty(my_list)
+        print_orders_position_list_pretty()
+    elif sub_menu_item == "Customer":
+        print_customer_position_list_pretty()
 
 
 def get_list_of_dict_keys(dict):
@@ -186,7 +254,22 @@ def select_changing_quantities(my_list):
     for item in my_list_set:
         changing_quantities = [item, my_list.count(item)]
         final_list.append(changing_quantities)
-    return final_list
+    print(final_list)
+
+# def tidy_interm_orders(my_list):
+#     #my_list=[{'order_id': 1, 'product_id': [6, 19, 19]}, {'order_id': 3, 'product_id': [5, 19, 5]}, {'order_id': 4, 'product_id': [3]}]
+#     for my_dict in my_list:
+#         key = my_dict["order_id"]
+#         print(key)
+#         value = my_dict["product_id"]
+#         print(value)
+#         result = my_dict[key]=value
+#         print(result)
+
+def group_interm_orders(my_list):
+    #my_list=[{'order_id': 1, 'product_id': 6}, {'order_id': 1, 'product_id': 19}, {'order_id': 3, 'product_id': 5}, {'order_id': 3, 'product_id': 19}, {'order_id': 4, 'product_id': 3}, {'order_id': 1, 'product_id': 19}, {'order_id': 3, 'product_id': 5}]
+    sorted_list=[list(y) for x,y in itertools.groupby(sorted(my_list,key=lambda x: (x['order_id'])),lambda x: (x['order_id']))]
+    return [{key:(value if key!='product_id' else list([x['product_id'] for x in my_dict])) for key,value in my_dict[0].items()} for my_dict in sorted_list]
 
 
 def define_new_product_quantities(previous_quantities: list, order_quantities: list):
@@ -281,3 +364,11 @@ def show_error_if_indices_not_in_option_list(list_of_indices, my_list):
         if my_index not in my_list:
             print("Error, you have selected one or more products that do not exist, please try again")
             return True
+
+
+
+# my_list=[]
+# open_database_order_table(my_list)
+interm_list=[{'order_id': 1, 'product_id': [6, 19, 19]}, {'order_id': 3, 'product_id': [5, 19, 5]}, {'order_id': 4, 'product_id': [3]}]
+order_list=[{'order_id': 1, 'customer_name': 'Elizabeth Windsor', 'customer_address': '1 Buckingham Avenue, London', 'customer_phone': '07896534236', 'courier_id': 1, 'delivery_status': 'Placed'}, {'order_id': 3, 'customer_name': 'David Attenborough', 'customer_address': '5 Regency Road, London', 'customer_phone': '07645384956', 'courier_id': 4, 'delivery_status': 'Placed'}, {'order_id': 4, 'customer_name': 'Bear Grylls', 'customer_address': '23 Limestreet, London', 'customer_phone': '07635774626', 'courier_id': 7, 'delivery_status': 'Being Delivered'}]
+create_orders_lists_from_db(interm_list, order_list)
