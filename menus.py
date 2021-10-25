@@ -63,6 +63,8 @@ def sub_menu(sub_menu_item, list1):
                 display_list_orders(list1)
             elif sub_menu_item == "Product":
                 utilities.print_product_position_list_pretty()
+            elif sub_menu_item == "Customer":
+                utilities.print_customer_position_list_pretty()
             else:
                 utilities.print_courier_position_list_pretty()
         elif user_choice2 == 2:
@@ -70,6 +72,8 @@ def sub_menu(sub_menu_item, list1):
                 crud.add_product(sub_menu_item)
             elif sub_menu_item == "Courier":
                 crud.add_courier(sub_menu_item)
+            elif sub_menu_item == "Customer":
+                crud.add_customer(sub_menu_item)
             else:
                 crud.add_order(sub_menu_item, list1)
         elif user_choice2 == 3:
@@ -77,6 +81,8 @@ def sub_menu(sub_menu_item, list1):
                 crud.update_order_status(sub_menu_item, list1)
             elif sub_menu_item == "Product":
                 crud.update_product()
+            elif sub_menu_item == "Customer":
+                crud.update_customer()
             else:
                 crud.update_courier()
         elif user_choice2 == 4:
@@ -84,6 +90,8 @@ def sub_menu(sub_menu_item, list1):
                 crud.update_order(sub_menu_item, list1)
             elif sub_menu_item == "Product":
                 crud.delete_product()
+            elif sub_menu_item == "Customer":
+                crud.delete_customer()
             else:
                 crud.delete_courier()
         elif user_choice2 == 5 and sub_menu_item == "Orders":

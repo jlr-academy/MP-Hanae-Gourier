@@ -420,4 +420,4 @@ def delete_customer():
             print(f"Failed to open customer database table. Error is: {e}")
         break
     utilities.clear_screen()
-    utilities.print_courier_position_list_pretty()
+    utilities.print_customer_position_list_pretty()

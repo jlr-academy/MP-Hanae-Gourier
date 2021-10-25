@@ -102,7 +102,7 @@ def create_orders_lists_from_db(interm_list, order_list):
         [new_list]=interm_list[i]["product_id"]
         my_dict.update({"items":new_list})
         i+=1
-    print(order_list)
+    return order_list
 
 
 def save_list(orders_list, product_list, courier_list, customer_list):
@@ -168,14 +168,14 @@ def print_customer_position_list_pretty():
         'Index', 'Customer Name', 'Customer Address', 'Customer Phone Number'), 'y>B')
     for dict in my_list:
         print("{:<10} {:<25} {:<50} {:<10}".format(
-            "  "+str(dict["customer_id"]), dict["customer_name"], dict["customer_address"], "     "+str(dict["courier_phone"])))
+            "  "+str(dict["customer_id"]), dict["customer_name"], dict["customer_address"], "     "+str(dict["customer_phone"])))
 
 
-def print_orders_position_list_pretty(my_list):
-    my_list = open_database_order_table([])
+def print_orders_position_list_pretty(order_list, intermediate_order_list):
+    my_list = create_db_order_list_ready_to_use(order_list, intermediate_order_list)
     printy("\n{:<8} {:<18} {:<50} {:<17} {:<10} {:<17} {:<9}".format('Index', 'Customer Name','Customer Address', 'Customer Phone', 'Courier', 'Status', 'Items Ordered'), 'y>B')
     for num, dict in enumerate(my_list, start=1):
-        print("{:<8} {:<18} {:<50} {:<17} {:<10} {:<17} {:<9}".format("  "+str(num),dict["customer_name"], dict["customer_address"], dict["customer_phone"], "   "+str(dict["courier"]), dict["status"], dict["items"]))
+        print("{:<8} {:<18} {:<50} {:<17} {:<10} {:<17} {:<9}".format("  "+str(dict["order_id"]),dict["customer_name"], dict["customer_address"], dict["customer_phone"], "   "+str(dict["courier"]), dict["status"], dict["items"]))
 
 
 def print_any_position_list_pretty(sub_menu_item):
@@ -203,21 +203,23 @@ def get_list_of_courier_keys_from_db():
     return [my_dict['courier_id'] for my_dict in my_list]
 
 
-def print_orders_position_list_by_status_pretty(my_list):
+def print_orders_position_list_by_status_pretty(order_list, intermediate_order_list):
+    my_list = create_db_order_list_ready_to_use(order_list, intermediate_order_list)
     list_of_orders_by_status = sorted(
         my_list, key=lambda category: category["status"])
     printy("\n {:<17} {:<8} {:<18} {:<50} {:<17} {:<10} {:<9}".format('Status', 'Index','Customer Name', 'Customer Address', 'Customer Phone', 'Courier', 'Items Ordered'), 'y>B')
     for num, dict in enumerate(list_of_orders_by_status, start=1):
-        print("{:<17} {:<8} {:<18} {:<50} {:<17} {:<10} {:<9}".format(" "+str(dict["status"]), "  "+str(num), " "+str(dict["customer_name"]), " "+str(
+        print("{:<17} {:<8} {:<18} {:<50} {:<17} {:<10} {:<9}".format(" "+str(dict["status"]), "  "+str(dict["order_id"]), " "+str(dict["customer_name"]), " "+str(
             dict["customer_address"]), " "+str(dict["customer_phone"]), "   "+str(dict["courier"]), " "+str(dict["items"])))
 
 
-def print_orders_position_list_by_courier_pretty(my_list):
+def print_orders_position_list_by_courier_pretty(order_list, intermediate_order_list):
+    my_list = create_db_order_list_ready_to_use(order_list, intermediate_order_list)
     list_of_orders_by_courier = sorted(
         my_list, key=lambda category: category["courier"])
     printy("\n {:<10} {:<8} {:<18} {:<50} {:<17} {:<17} {:<9}".format('Courier', 'Index','Customer Name', 'Customer Address', 'Customer Phone', 'Status', 'Items Ordered'), 'y>B')
     for num, dict in enumerate(list_of_orders_by_courier, start=1):
-        print("{:<10} {:<8} {:<18} {:<50} {:<17} {:<17} {:<9}".format("   "+str(dict["courier"]), "  "+str(num), " "+str(
+        print("{:<10} {:<8} {:<18} {:<50} {:<17} {:<17} {:<9}".format("   "+str(dict["courier"]), "  "+str(dict["order_id"]), " "+str(
             dict["customer_name"]), " "+str(dict["customer_address"]), " "+str(dict["customer_phone"]), " "+str(dict["status"]), " "+str(dict["items"])))
 
 
@@ -256,18 +258,8 @@ def select_changing_quantities(my_list):
         final_list.append(changing_quantities)
     print(final_list)
 
-# def tidy_interm_orders(my_list):
-#     #my_list=[{'order_id': 1, 'product_id': [6, 19, 19]}, {'order_id': 3, 'product_id': [5, 19, 5]}, {'order_id': 4, 'product_id': [3]}]
-#     for my_dict in my_list:
-#         key = my_dict["order_id"]
-#         print(key)
-#         value = my_dict["product_id"]
-#         print(value)
-#         result = my_dict[key]=value
-#         print(result)
 
 def group_interm_orders(my_list):
-    #my_list=[{'order_id': 1, 'product_id': 6}, {'order_id': 1, 'product_id': 19}, {'order_id': 3, 'product_id': 5}, {'order_id': 3, 'product_id': 19}, {'order_id': 4, 'product_id': 3}, {'order_id': 1, 'product_id': 19}, {'order_id': 3, 'product_id': 5}]
     sorted_list=[list(y) for x,y in itertools.groupby(sorted(my_list,key=lambda x: (x['order_id'])),lambda x: (x['order_id']))]
     return [{key:(value if key!='product_id' else list([x['product_id'] for x in my_dict])) for key,value in my_dict[0].items()} for my_dict in sorted_list]
 
@@ -366,9 +358,7 @@ def show_error_if_indices_not_in_option_list(list_of_indices, my_list):
             return True
 
 
-
-# my_list=[]
-# open_database_order_table(my_list)
-interm_list=[{'order_id': 1, 'product_id': [6, 19, 19]}, {'order_id': 3, 'product_id': [5, 19, 5]}, {'order_id': 4, 'product_id': [3]}]
-order_list=[{'order_id': 1, 'customer_name': 'Elizabeth Windsor', 'customer_address': '1 Buckingham Avenue, London', 'customer_phone': '07896534236', 'courier_id': 1, 'delivery_status': 'Placed'}, {'order_id': 3, 'customer_name': 'David Attenborough', 'customer_address': '5 Regency Road, London', 'customer_phone': '07645384956', 'courier_id': 4, 'delivery_status': 'Placed'}, {'order_id': 4, 'customer_name': 'Bear Grylls', 'customer_address': '23 Limestreet, London', 'customer_phone': '07635774626', 'courier_id': 7, 'delivery_status': 'Being Delivered'}]
-create_orders_lists_from_db(interm_list, order_list)
+def create_db_order_list_ready_to_use(order_list, intermediate_order_list):
+    order_list = open_database_order_table(order_list)
+    interm_list = open_database_intermediate_order_table(intermediate_order_list)
+    create_orders_lists_from_db(interm_list, order_list)
