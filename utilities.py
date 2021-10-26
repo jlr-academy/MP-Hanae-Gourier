@@ -188,8 +188,8 @@ def select_customer():
             "Please enter 1 if you would like to select an existing customer. Please enter 2 if you would like to create a new customer.\n"))
         if customer_choice == 1:
             print_customer_position_list_pretty()
-            sql_utilities.select_customer_from_list()
-            break
+            new_customer_id = sql_utilities.select_customer_from_list()
+            return new_customer_id
         elif customer_choice == 2:
             crud.add_customer("Customer")
             break
@@ -205,10 +205,11 @@ def group_interm_orders(my_list):
 
 def create_orders_lists_from_db(interm_list, order_list):
     i=0
-    for my_dict in order_list:
-        new_list=interm_list[i]["product_id"]
-        my_dict.update({"items":new_list})
-        i+=1
+    print(order_list)
+    print(interm_list)
+    for i in range(len(order_list)):
+        if order_list[i]["order_id"]==interm_list[i]["order_id"]:
+            order_list[i].update({"items":interm_list[i]["product_id"]})
     return order_list
 
 
@@ -257,3 +258,5 @@ def print_any_position_list_pretty(sub_menu_item):
         print_orders_position_list_pretty()
     elif sub_menu_item == "Customer":
         print_customer_position_list_pretty()
+
+

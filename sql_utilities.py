@@ -52,6 +52,19 @@ def open_database_customer_table(my_list):
     except Exception as e:
         print(f"Failed to open customer database table. Error is: {e}")
 
+# def fetch_customer_id_from_db():
+#     connection.insert_id()
+#         try:
+#         connection = connect_to_db(cursorclass=pymysql.cursors.DictCursor)
+#         cursor = connection.cursor()
+#         cursor.execute('SELECT * FROM customer')
+#         rows = cursor.fetchall()
+#         for row in rows:
+#             my_list.append(row)
+#         close_db(cursor, connection)
+#         return my_list
+#     except Exception as e:
+#         print(f"Failed to open customer database table. Error is: {e}")
 
 def select_quantities_from_product_table():
     try:
@@ -109,28 +122,14 @@ def select_customer_from_list():
     available_customers = utilities.get_list_of_customer_keys_from_db()
     if utilities.show_error_if_index_not_in_option_list(new_customer_id, available_customers):
         return
-    try:
-        connection = connect_to_db(cursorclass=pymysql.cursors.DictCursor)
-        cursor = connection.cursor()
-        sql = "SELECT customer_name, customer_address, customer_phone FROM customer WHERE customer_id = %s"
-        val = str(customer_id_input)
-        cursor.execute(sql, val)
-        row = cursor.fetchall()
-        new_customer_dict = row[0]
-        close_db(cursor, connection)
-        new_customer_name = new_customer_dict["customer_name"]
-        new_customer_address = new_customer_dict["customer_address"]
-        new_customer_phone = new_customer_dict["customer_phone"]
-        return new_customer_name, new_customer_address, new_customer_phone
-    except Exception as e:
-        print(f"Failed to open customer database table. Error is: {e}")
+    return new_customer_id
 
 
 def open_database_order_table(my_list):
     try:
         connection = connect_to_db(cursorclass=pymysql.cursors.DictCursor)
         cursor = connection.cursor()
-        cursor.execute('SELECT o.order_id, c.customer_name, c.customer_address, c.customer_phone, o.courier_id, d.delivery_status FROM ordeer o LEFT JOIN customer c ON o.customer_id = c.customer_id LEFT JOIN delivery_status d ON o.status_id = d.status_id')
+        cursor.execute('SELECT o.order_id, c.customer_name, c.customer_address, c.customer_phone, o.courier_id, o.delivery_status FROM ordeer o LEFT JOIN customer c ON o.customer_id = c.customer_id')
         rows = cursor.fetchall()
         for row in rows:
             my_list.append(row)
@@ -154,3 +153,28 @@ def open_database_intermediate_order_table(my_list):
         print(f"Failed to open intermediate order database table. Error is: {e}")
 
 
+def add_new_order_to_database(new_customer_id, new_courier_id, new_delivery_status):
+    try:
+        connection = connect_to_db()
+        cursor = connection.cursor()
+        sql = "INSERT INTO ordeer (customer_id, courier_id, delivery_status) VALUES (%s, %s, %s)"
+        val = (str(new_customer_id), str(new_courier_id), str(new_delivery_status))
+        cursor.execute(sql, val)
+        connection.commit()
+        close_db(cursor, connection)
+    except Exception as e:
+        print(f"Failed to open customer database table. Error is: {e}")
+
+
+def update_db_with_products(order_id, new_items_list):
+    try:
+        connection = connect_to_db()
+        cursor = connection.cursor()
+        sql = "INSERT INTO order_items (order_id, product_id) VALUES (%s, %s)"
+        for product_id in new_items_list:
+            val = (str(order_id), str(product_id))
+            cursor.execute(sql, val)
+        connection.commit()
+        close_db(cursor,connection)
+    except Exception as e:
+        print(f"Failed to open product database table. Error is: {e}")

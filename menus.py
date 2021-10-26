@@ -75,7 +75,7 @@ def sub_menu(sub_menu_item, list1):
             elif sub_menu_item == "Customer":
                 crud.add_customer(sub_menu_item)
             else:
-                crud.add_order(list1)
+                crud.add_order()
         elif user_choice2 == 3:
             if sub_menu_item == "Orders":
                 crud.update_order_status(sub_menu_item, list1)
