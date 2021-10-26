@@ -1,9 +1,9 @@
 ## What it is
 This is an application for a cafe.
 ## Purpose
-Its purpose is to help the cafe owner with products and couriers.
+Its purpose is to help the cafe owner with products, couriers, orders and customers.
 ## Features
-There are two submenus, one for product and one for courier. Each menu allows the user to either view the list of items, add an items, amend an item or delete an item. 
+There are four submenus, one for product, one for courier, one for courier. Each menu allows the user to either view the list of items, add an items, amend an item or delete an item. 
 ## Usage/examples
 
 ## Installation
@@ -13,7 +13,7 @@ Please contact hgourie1@jagualandrover with any questions.
 ## Building from source
 
 ## Contributing
-@roryjbd, Michael Welburn, Kevin Mason.
+@roryjbd, Kevin Mason, Michael Welburn, Adam McArdle.
 ## Authors/maintainers
 Hanae Gourier
 ## License
