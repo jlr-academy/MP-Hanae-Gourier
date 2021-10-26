@@ -67,7 +67,8 @@ def add_customer(sub_menu_item):
         new_customer_phone = input(
             f"Please type new {sub_menu_item.lower()} phone: \n")
         if new_customer_phone.isnumeric() is not True:
-            print("Error, please enter a valid phone number")
+            print("Error, input is not a valid phone number")
+            return
         else:
             try:
                 connection = sql_utilities.connect_to_db()
