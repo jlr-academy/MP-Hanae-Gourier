@@ -95,7 +95,7 @@ def sub_menu(sub_menu_item, list1):
             else:
                 crud.delete_courier()
         elif user_choice2 == 5 and sub_menu_item == "Orders":
-            crud.delete_item(sub_menu_item, list1)
+            crud.delete_order()
         else:
             print("User entry not recognised, program will now go back to main menu")
             break

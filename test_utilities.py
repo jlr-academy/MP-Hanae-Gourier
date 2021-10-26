@@ -85,7 +85,7 @@ def test_print_courier_position_list_pretty():
     pass
 
 @patch('builtins.print')
-def test_print_orders_position_list_pretty(mock_print): #happy path - FAILS!!!!! TO BE FIXED!!!
+def test_print_orders_position_list_pretty(mock_print): #happy path
     #assemble
     test_list=[{
                 "customer_name": "John",
@@ -103,11 +103,10 @@ def test_print_orders_position_list_pretty(mock_print): #happy path - FAILS!!!!!
                 "status": "preparing",
                 "items": [1, 3, 4]
                 }]
-    expected=2
     #act
     utilities.print_orders_position_list_pretty(test_list)
     #assert
-    assert mock_print.call_count == expected
+    assert mock_print.call_count == 2
 
 def test_print_any_position_list_pretty():
     pass
@@ -127,7 +126,7 @@ def test_print_orders_position_list_by_status_pretty():
 
 def test_print_orders_position_list_by_status_pretty():
     pass
-        
+
 def test_transform_inputs_into_lists(): #happy path
     #assemble
     inputs="1 5 24"

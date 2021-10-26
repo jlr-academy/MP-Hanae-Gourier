@@ -15,6 +15,7 @@ def test_main_menu_option_0(mock_input):
         "courier": 2,
         "status": "PREPARING"
     }]
+    customer_list = ["Marta", "Nina", "Gordo"]
     # act and assert
     with pytest.raises(SystemExit):
-        menus.process_main_menu(product_list, courier_list, orders_list)
+        menus.process_main_menu(product_list, courier_list, orders_list, customer_list)

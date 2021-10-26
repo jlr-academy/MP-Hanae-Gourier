@@ -1,4 +1,5 @@
 import utilities
+import sql_utilities
 
 
 def add_product(sub_menu_item):
@@ -11,14 +12,14 @@ def add_product(sub_menu_item):
             new_item_quantity = int(
                 input(f"Please type new {sub_menu_item.lower()} quantity: \n"))
             try:
-                connection = utilities.connect_to_db()
+                connection = sql_utilities.connect_to_db()
                 cursor = connection.cursor()
                 sql = "INSERT INTO product (product_name, product_price, product_quantity) VALUES (%s, %s, %s)"
                 val = (str(new_item_name), str(
                     new_item_price), str(new_item_quantity))
                 cursor.execute(sql, val)
                 connection.commit()
-                utilities.close_db(cursor,connection)
+                sql_utilities.close_db(cursor,connection)
             except Exception as e:
                 print(f"Failed to open product database table. Error is: {e}")
             break
@@ -36,13 +37,13 @@ def add_courier(sub_menu_item):
             print("Error, please enter a valid phone number")
         else:
             try:
-                connection = utilities.connect_to_db()
+                connection = sql_utilities.connect_to_db()
                 cursor = connection.cursor()
                 sql = "INSERT INTO courier (courier_name, courier_phone) VALUES (%s, %s)"
                 val = (str(new_item_name), str(new_item_phone))
                 cursor.execute(sql, val)
                 connection.commit()
-                utilities.close_db(cursor, connection)
+                sql_utilities.close_db(cursor, connection)
             except Exception as e:
                 print(f"Failed to open courier database table. Error is: {e}")
             break
@@ -62,13 +63,13 @@ def add_customer(sub_menu_item):
             print("Error, please enter a valid phone number")
         else:
             try:
-                connection = utilities.connect_to_db()
+                connection = sql_utilities.connect_to_db()
                 cursor = connection.cursor()
                 sql = "INSERT INTO customer (customer_name, customer_address, customer_phone) VALUES (%s, %s, %s)"
                 val = (str(new_customer_name), str(new_customer_address), str(new_customer_phone))
                 cursor.execute(sql, val)
                 connection.commit()
-                utilities.close_db(cursor, connection)
+                sql_utilities.close_db(cursor, connection)
             except Exception as e:
                 print(f"Failed to open customer database table. Error is: {e}")
             break
@@ -87,8 +88,9 @@ def add_order(list1):
         new_courier = int(input(
             "\n Please input index of courier chosen for this order: "))
         available_couriers=utilities.get_list_of_courier_keys_from_db()
-        #if utilities.show_error_if_index_not_in_option_list(new_courier,available_couriers)==True:
-        status_list = ["PLACED", "PREPARING","BEING DELIVERED", "DELIVERED", "CANCELLED"]
+        if utilities.show_error_if_index_not_in_option_list(new_courier,available_couriers):
+            return
+        status_list = ["PLACED", "PREPARING","BEING DELIVERED", "DELIVERED"]
         utilities.print_position_list(status_list)
         new_status_index = int(
             input("\n Please type index of order status: \n").upper())
@@ -113,10 +115,13 @@ def update_product():
     while True:
         utilities.print_product_position_list_pretty()
         try:
-            connection = utilities.connect_to_db()
+            connection = sql_utilities.connect_to_db()
             cursor = connection.cursor()
             modified_dict_index = int(
                 input(f"\n Please input index of the product to be modified: "))
+            available_products = utilities.get_list_of_product_keys_from_db()
+            if utilities.show_error_if_index_not_in_option_list(modified_dict_index,available_products):
+                return
             sql = ('SELECT * FROM product WHERE product_id = %s')
             val = (str(modified_dict_index))
             cursor.execute(sql, val)
@@ -147,7 +152,9 @@ def update_product():
                 val = (modified_product_quantity, str(modified_dict_index))
                 cursor.execute(sql, val)
                 connection.commit()
-            utilities.close_db(cursor, connection)
+            else:
+                print("Error, index not within list.")
+            sql_utilities.close_db(cursor, connection)
         except Exception as e:
             print(f"Failed to open product database table. Error is: {e}")
         break
@@ -160,7 +167,7 @@ def update_courier():
     while True:
         utilities.print_courier_position_list_pretty()
         try:
-            connection = utilities.connect_to_db()
+            connection = sql_utilities.connect_to_db()
             cursor = connection.cursor()
             modified_dict_index = int(
                 input(f"\n Please input index of the courier to be modified: "))
@@ -187,7 +194,7 @@ def update_courier():
                 val = (modified_courier_phone, str(modified_dict_index))
                 cursor.execute(sql, val)
                 connection.commit()
-            utilities.close_db(cursor, connection)
+            sql_utilities.close_db(cursor, connection)
         except Exception as e:
             print(f"Failed to open courier database table. Error is: {e}")
         break
@@ -200,7 +207,7 @@ def update_customer():
     while True:
         utilities.print_customer_position_list_pretty()
         try:
-            connection = utilities.connect_to_db()
+            connection = sql_utilities.connect_to_db()
             cursor = connection.cursor()
             modified_dict_index = int(
                 input(f"\n Please input index of the customer to be modified: "))
@@ -234,7 +241,7 @@ def update_customer():
                 val = (modified_customer_phone, str(modified_dict_index))
                 cursor.execute(sql, val)
                 connection.commit()
-            utilities.close_db(cursor, connection)
+            sql_utilities.close_db(cursor, connection)
         except Exception as e:
             print(f"Failed to open customer database table. Error is: {e}")
         break
@@ -317,31 +324,12 @@ def update_order(sub_menu_item, list):
             utilities.print_any_position_list_pretty(sub_menu_item, list)
 
 
-def delete_item(sub_menu_item, list, position=None, confirmation=None):
-    utilities.clear_screen()
-    while True:
-        utilities.print_any_position_list_pretty(sub_menu_item, list)
-        if position is None:
-            position = int(input(
-                f"\n Please type position in the list of {sub_menu_item.lower()} to be deleted: "))-1
-        if confirmation is None:
-            confirmation = input(
-                f"Are you sure you want to delete {sub_menu_item.lower()} {position+1, list[position]}? Please select Y to confirm: ")
-        utilities.clear_screen()
-        if confirmation.upper() == "Y":
-            list.pop(position)
-            utilities.print_any_position_list_pretty(sub_menu_item, list)
-            break
-        else:
-            break
-
-
 def delete_product():
     utilities.clear_screen()
     while True:
         utilities.print_product_position_list_pretty()
         try:
-            connection = utilities.connect_to_db()
+            connection = sql_utilities.connect_to_db()
             cursor = connection.cursor()
             modified_dict_index = int(
                 input(f"\n Please input index of the product to be deleted: "))
@@ -352,10 +340,10 @@ def delete_product():
                 val = (str(modified_dict_index))
                 cursor.execute(sql, val)
                 connection.commit()
-                utilities.close_db(cursor, connection)
+                sql_utilities.close_db(cursor, connection)
             else:
                 connection.commit()
-                utilities.close_db(cursor, connection)
+                sql_utilities.close_db(cursor, connection)
                 break
         except Exception as e:
             print(f"Failed to open product database table. Error is: {e}")
@@ -369,7 +357,7 @@ def delete_courier():
     while True:
         utilities.print_courier_position_list_pretty()
         try:
-            connection = utilities.connect_to_db()
+            connection = sql_utilities.connect_to_db()
             cursor = connection.cursor()
             modified_dict_index = int(
                 input(f"\n Please input index of the courier to be deleted: "))
@@ -380,10 +368,10 @@ def delete_courier():
                 val = (str(modified_dict_index))
                 cursor.execute(sql, val)
                 connection.commit()
-                utilities.close_db(cursor, connection)
+                sql_utilities.close_db(cursor, connection)
             else:
                 connection.commit()
-                utilities.close_db(cursor, connection)
+                sql_utilities.close_db(cursor, connection)
                 break
         except Exception as e:
             print(f"Failed to open courier database table. Error is: {e}")
@@ -397,7 +385,7 @@ def delete_customer():
     while True:
         utilities.print_customer_position_list_pretty()
         try:
-            connection = utilities.connect_to_db()
+            connection = sql_utilities.connect_to_db()
             cursor = connection.cursor()
             modified_dict_index = int(
                 input(f"\n Please input index of the customer to be deleted: "))
@@ -408,13 +396,41 @@ def delete_customer():
                 val = (str(modified_dict_index))
                 cursor.execute(sql, val)
                 connection.commit()
-                utilities.close_db(cursor, connection)
+                sql_utilities.close_db(cursor, connection)
             else:
                 connection.commit()
-                utilities.close_db(cursor, connection)
+                sql_utilities.close_db(cursor, connection)
                 break
         except Exception as e:
             print(f"Failed to open customer database table. Error is: {e}")
+        break
+    utilities.clear_screen()
+    utilities.print_customer_position_list_pretty()
+
+
+def delete_order():
+    utilities.clear_screen()
+    while True:
+        utilities.print_orders_position_list_pretty()
+        try:
+            connection = sql_utilities.connect_to_db()
+            cursor = connection.cursor()
+            modified_dict_index = int(
+                input(f"\n Please input index of the order to be deleted: "))
+            confirmation = input(
+                f"Are you sure you want to delete this order? Please select Y to confirm: ")
+            if confirmation == "y":
+                sql = "DELETE FROM ordeer WHERE order_id=%s"
+                val = (str(modified_dict_index))
+                cursor.execute(sql, val)
+                connection.commit()
+                sql_utilities.close_db(cursor, connection)
+            else:
+                connection.commit()
+                sql_utilities.close_db(cursor, connection)
+                break
+        except Exception as e:
+            print(f"Failed to open order database table. Error is: {e}")
         break
     utilities.clear_screen()
     utilities.print_customer_position_list_pretty()
