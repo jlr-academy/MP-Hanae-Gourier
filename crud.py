@@ -380,6 +380,9 @@ def delete_courier():
             cursor = connection.cursor()
             modified_dict_index = int(
                 input(f"\n Please input index of the courier to be deleted: "))
+            available_products = utilities.get_list_of_courier_keys_from_db()
+            if utilities.show_error_if_index_not_in_option_list(modified_dict_index, available_products):
+                return
             confirmation = input(
                 f"Are you sure you want to delete this courier? Please select Y to confirm: ")
             if confirmation == "y":
