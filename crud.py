@@ -102,7 +102,7 @@ def add_order(list1):
         status_list = ["PLACED", "PREPARING","BEING DELIVERED", "DELIVERED"]
         utilities.print_position_list(status_list)
         new_status_index = int(
-            input("\n Please type index of order status: \n").upper())
+            input("\n Please type index of order status: \n"))
         new_status_value = status_list[new_status_index]
         utilities.print_product_position_list_pretty()
         new_items = input(
@@ -115,7 +115,7 @@ def add_order(list1):
                     "customer_phone": new_customer_phone, "courier": new_courier, "status": new_status_value, "items": new_items}
         list1.append(new_dict)
         utilities.clear_screen()
-        utilities.print_orders_position_list_pretty(list1)
+        utilities.print_orders_position_list_pretty()
         break
 
 

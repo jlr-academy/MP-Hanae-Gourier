@@ -104,23 +104,26 @@ def close_db(cursor, connection):
 
 
 def select_customer_from_list():
-    utilities.print_customer_position_list_pretty
-    customer_id_input = int(input(
-            "\n Please input index of customer chosen for this order: "))
+    customer_id_input = input("\n Please input index of customer chosen for this order: ")
+    new_customer_id = int(customer_id_input)
+    available_customers = utilities.get_list_of_customer_keys_from_db()
+    if utilities.show_error_if_index_not_in_option_list(new_customer_id, available_customers):
+        return
     try:
-        connection = connect_to_db()
+        connection = connect_to_db(cursorclass=pymysql.cursors.DictCursor)
         cursor = connection.cursor()
         sql = "SELECT customer_name, customer_address, customer_phone FROM customer WHERE customer_id = %s"
-        val = (str(customer_id_input))
+        val = str(customer_id_input)
         cursor.execute(sql, val)
         row = cursor.fetchall()
-        new_customer_name = row[1]
-        new_customer_address = row[2]
-        new_customer_phone = row [3]
+        new_customer_dict = row[0]
         close_db(cursor, connection)
+        new_customer_name = new_customer_dict["customer_name"]
+        new_customer_address = new_customer_dict["customer_address"]
+        new_customer_phone = new_customer_dict["customer_phone"]
+        return new_customer_name, new_customer_address, new_customer_phone
     except Exception as e:
         print(f"Failed to open customer database table. Error is: {e}")
-    return new_customer_name, new_customer_address, new_customer_phone
 
 
 def open_database_order_table(my_list):

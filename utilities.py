@@ -81,8 +81,7 @@ def print_customer_position_list_pretty():
         'Index', 'Customer Name', 'Customer Address', 'Customer Phone Number'), 'y>B')
     for dict in my_list:
         print("{:<10} {:<25} {:<50} {:<10}".format(
-            "  "+str(dict["customer_id"]), dict["customer_name"], dict["customer_address"], "     "+str(dict["customer_phone"])))
-
+            "  "+str(dict["customer_id"]), str(dict["customer_name"]), str(dict["customer_address"]), "     "+str(dict["customer_phone"])))
 
 def get_list_of_dict_keys(dict):
     return [key for key in dict.keys()]
@@ -184,13 +183,19 @@ def show_error_if_indices_not_in_option_list(list_of_indices, my_list):
 
 
 def select_customer():
-    customer_choice = input(
-        "Please select 'e' if you would like to select an existing customer. Select 'n' to input a new customer.\n")
-    if customer_choice == 'e':
-        sql_utilities.select_customer_from_list()
-    elif customer_choice == 'n':
-        crud.add_customer("Customer")
-    #else: add error message if input neither e nor n
+    while True:
+        customer_choice = int(input(
+            "Please enter 1 if you would like to select an existing customer. Please enter 2 if you would like to create a new customer.\n"))
+        if customer_choice == 1:
+            print_customer_position_list_pretty()
+            sql_utilities.select_customer_from_list()
+            break
+        elif customer_choice == 2:
+            crud.add_customer("Customer")
+            break
+        else:
+            print("User entry not recognised, program will return to previous menu")
+            break
 
 
 def group_interm_orders(my_list):
@@ -200,8 +205,7 @@ def group_interm_orders(my_list):
 
 def create_orders_lists_from_db(interm_list, order_list):
     i=0
-    for my_dict in order_list: #[{'order_id': 1, 'customer_name': 'Elizabeth Windsor', 'customer_address': '1 Buckingham Avenue, London', 'customer_phone': '07896534236', 'courier_id': 1, 'delivery_status': 'Placed'}, {'order_id': 3, 'customer_name': 'David Attenborough', 'customer_address': '5 Regency Road, London', 'customer_phone': '07645384956', 'courier_id': 4, 'delivery_status': 'Placed'}, {'order_id': 4, 'customer_name': 'Bear Grylls', 'customer_address': '23 Limestreet, London', 'customer_phone': '07635774626', 'courier_id': 7, 'delivery_status': 'Being Delivered'}]
-        print(interm_list[i])
+    for my_dict in order_list:
         new_list=interm_list[i]["product_id"]
         my_dict.update({"items":new_list})
         i+=1
