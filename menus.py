@@ -60,7 +60,7 @@ def sub_menu(sub_menu_item, list1):
         elif user_choice2 == 1:
             utilities.clear_screen()
             if sub_menu_item == "Orders":
-                display_list_orders(list1)
+                display_list_orders()
             elif sub_menu_item == "Product":
                 utilities.print_product_position_list_pretty()
             elif sub_menu_item == "Customer":
@@ -75,7 +75,7 @@ def sub_menu(sub_menu_item, list1):
             elif sub_menu_item == "Customer":
                 crud.add_customer(sub_menu_item)
             else:
-                crud.add_order(sub_menu_item, list1)
+                crud.add_order(list1)
         elif user_choice2 == 3:
             if sub_menu_item == "Orders":
                 crud.update_order_status(sub_menu_item, list1)
@@ -101,7 +101,7 @@ def sub_menu(sub_menu_item, list1):
             break
 
 
-def display_list_orders(my_list):
+def display_list_orders():
     print("""Please select how you would like your list of orders to be displayed:
         1. By index number
         2. By status
@@ -109,8 +109,8 @@ def display_list_orders(my_list):
     user_choice3 = int(input())
     utilities.clear_screen()
     if user_choice3 == 1:
-        utilities.print_orders_position_list_pretty(my_list)
+        utilities.print_orders_position_list_pretty()
     elif user_choice3 == 2:
-        utilities.print_orders_position_list_by_status_pretty(my_list)
+        utilities.print_orders_position_list_by_status_pretty()
     elif user_choice3 == 3:
-        utilities.print_orders_position_list_by_courier_pretty(my_list)
+        utilities.print_orders_position_list_by_courier_pretty()

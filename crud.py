@@ -74,42 +74,38 @@ def add_customer(sub_menu_item):
             break
     utilities.clear_screen()
     utilities.print_customer_position_list_pretty()
+    return new_customer_name, new_customer_address, new_customer_phone
 
 
-def add_order(sub_menu_item, list1):
+def add_order(list1):
     while True:
-        new_customer_name = input(
-            f"Please type new {sub_menu_item.lower()} cutomer name: \n").title()
-        new_customer_address = input(
-            f"Please type new {sub_menu_item.lower()} customer address: \n").title()
-        new_customer_phone = input(
-            f"Please type new {sub_menu_item.lower()} customer phone: \n")
-        if new_customer_phone.isnumeric() is not True:
-            print("Error, please enter a valid phone number")
-        else:
-            utilities.print_courier_position_list_pretty()
-            new_courier = int(input(
-                "\n Please input index of courier chosen for this order: "))
-            available_couriers=utilities.get_list_of_courier_keys_from_db()
-            #if utilities.show_error_if_index_not_in_option_list(new_courier,available_couriers)==True:
-            status_list = ["PLACED", "PREPARING","BEING DELIVERED", "DELIVERED", "CANCELLED"]
-            utilities.print_position_list(status_list)
-            new_status_index = int(
-                input(f"\n Please type index of order status: \n").upper())
-            new_status_value = status_list[new_status_index]
-            utilities.print_product_position_list_pretty()
-            new_items = input(
-                f"Please type index of products to be added to order. To add more than one item, please separate indices with a space: \n")
-            new_items_list = utilities.transform_inputs_into_list(new_items)
-            available_products_list=utilities.get_list_of_product_keys_from_db()
-            #if utilities.show_error_if_indices_not_in_option_list(new_items_list,available_products_list)==True:
-            utilities.update_db_quantities(new_items_list)
-            new_dict = {"customer_name": new_customer_name, "customer_address": new_customer_address,
-                        "customer_phone": new_customer_phone, "courier": new_courier, "status": new_status_value, "items": new_items}
-            list1.append(new_dict)
-            utilities.clear_screen()
-            utilities.print_orders_position_list_pretty(list1)
-            break
+        new_customer_name = None
+        new_customer_address = None
+        new_customer_phone = None
+        utilities.select_customer()
+        utilities.print_courier_position_list_pretty()
+        new_courier = int(input(
+            "\n Please input index of courier chosen for this order: "))
+        available_couriers=utilities.get_list_of_courier_keys_from_db()
+        #if utilities.show_error_if_index_not_in_option_list(new_courier,available_couriers)==True:
+        status_list = ["PLACED", "PREPARING","BEING DELIVERED", "DELIVERED", "CANCELLED"]
+        utilities.print_position_list(status_list)
+        new_status_index = int(
+            input("\n Please type index of order status: \n").upper())
+        new_status_value = status_list[new_status_index]
+        utilities.print_product_position_list_pretty()
+        new_items = input(
+            "Please type index of products to be added to order. To add more than one item, please separate indices with a space: \n")
+        new_items_list = utilities.transform_inputs_into_list(new_items)
+        available_products_list=utilities.get_list_of_product_keys_from_db()
+        #if utilities.show_error_if_indices_not_in_option_list(new_items_list,available_products_list)==True:
+        utilities.update_db_quantities(new_items_list)
+        new_dict = {"customer_name": new_customer_name, "customer_address": new_customer_address,
+                    "customer_phone": new_customer_phone, "courier": new_courier, "status": new_status_value, "items": new_items}
+        list1.append(new_dict)
+        utilities.clear_screen()
+        utilities.print_orders_position_list_pretty(list1)
+        break
 
 
 def update_product():
