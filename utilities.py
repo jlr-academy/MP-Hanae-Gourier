@@ -69,7 +69,7 @@ def open_database_customer_table(my_list):
 
 
 def save_list(orders_list, product_list, courier_list, customer_list):
-    export_to_csv(orders_list, "orders.csv", ["customer_name", "customer_address", "customer_phone", "courier", "status", "items"])
+    export_to_csv(orders_list, "orders.csv", ["order_id", "customer_name", "customer_address", "customer_phone", "courier_id", "delivery_status", "items"])
     export_to_csv(product_list, "product.csv", ["product_id", "product_name", "product_price", "product_quantity"])
     export_to_csv(courier_list, "courier.csv", ["courier_id", "courier_name", "courier_phone"])
     export_to_csv(customer_list, "customer.csv", ["customer_id", "customer_name", "customer_address", "customer_phone"])
@@ -318,6 +318,7 @@ def group_interm_orders(my_list):
 def create_orders_lists_from_db(interm_list, order_list):
     i=0
     for my_dict in order_list: #[{'order_id': 1, 'customer_name': 'Elizabeth Windsor', 'customer_address': '1 Buckingham Avenue, London', 'customer_phone': '07896534236', 'courier_id': 1, 'delivery_status': 'Placed'}, {'order_id': 3, 'customer_name': 'David Attenborough', 'customer_address': '5 Regency Road, London', 'customer_phone': '07645384956', 'courier_id': 4, 'delivery_status': 'Placed'}, {'order_id': 4, 'customer_name': 'Bear Grylls', 'customer_address': '23 Limestreet, London', 'customer_phone': '07635774626', 'courier_id': 7, 'delivery_status': 'Being Delivered'}]
+        print(interm_list[i])
         new_list=interm_list[i]["product_id"]
         my_dict.update({"items":new_list})
         i+=1
@@ -356,40 +357,37 @@ def create_db_order_list_ready_to_use():
     order_list=[]
     intermediate_order_list=[]
     order_list = open_database_order_table(order_list)
-    print("order list is:")
-    print(order_list)
     interm_list = open_database_intermediate_order_table(intermediate_order_list)
-    interm_list = group_interm_orders(interm_list) #[{'order_id': 1, 'product_id': [6, 19, 19]}, {'order_id': 3, 'product_id': [5, 19, 5]}, {'order_id': 4, 'product_id': [3]}]
-    print("interm list is:")
-    print(interm_list)
-    create_orders_lists_from_db(order_list, interm_list)
+    interm_list = group_interm_orders(interm_list)
+    return create_orders_lists_from_db(interm_list, order_list)
+
 
 
 def print_orders_position_list_by_status_pretty():
     my_list = create_db_order_list_ready_to_use()
     list_of_orders_by_status = sorted(
-        my_list, key=lambda category: category["status"])
-    printy("\n {:<17} {:<8} {:<18} {:<50} {:<17} {:<10} {:<9}".format('Status', 'Index','Customer Name', 'Customer Address', 'Customer Phone', 'Courier', 'Items Ordered'), 'y>B')
-    for dict in enumerate(list_of_orders_by_status, start=1):
-        print("{:<17} {:<8} {:<18} {:<50} {:<17} {:<10} {:<9}".format(" "+str(dict["status"]), "  "+str(dict["order_id"]), " "+str(dict["customer_name"]), " "+str(
-            dict["customer_address"]), " "+str(dict["customer_phone"]), "   "+str(dict["courier"]), " "+str(dict["items"])))
+        my_list, key=lambda category: category["delivery_status"])
+    printy("\n {:<17} {:<8} {:<25} {:<50} {:<17} {:<10} {:<9}".format('Status', 'Index','Customer Name', 'Customer Address', 'Customer Phone', 'Courier', 'Items Ordered'), 'y>B')
+    for dict in list_of_orders_by_status:
+        print("{:<17} {:<8} {:<25} {:<50} {:<17} {:<10} {:<9}".format(" "+str(dict["delivery_status"]), "  "+str(dict["order_id"]), " "+str(dict["customer_name"]), " "+str(
+            dict["customer_address"]), " "+str(dict["customer_phone"]), "   "+str(dict["courier_id"]), " "+str(dict["items"])))
 
 
 def print_orders_position_list_by_courier_pretty():
     my_list = create_db_order_list_ready_to_use()
     list_of_orders_by_courier = sorted(
-        my_list, key=lambda category: category["courier"])
-    printy("\n {:<10} {:<8} {:<18} {:<50} {:<17} {:<17} {:<9}".format('Courier', 'Index','Customer Name', 'Customer Address', 'Customer Phone', 'Status', 'Items Ordered'), 'y>B')
-    for dict in enumerate(list_of_orders_by_courier, start=1):
-        print("{:<10} {:<8} {:<18} {:<50} {:<17} {:<17} {:<9}".format("   "+str(dict["courier"]), "  "+str(dict["order_id"]), " "+str(
-            dict["customer_name"]), " "+str(dict["customer_address"]), " "+str(dict["customer_phone"]), " "+str(dict["status"]), " "+str(dict["items"])))
+        my_list, key=lambda category: category["courier_id"])
+    printy("\n {:<10} {:<8} {:<25} {:<50} {:<17} {:<17} {:<9}".format('Courier', 'Index','Customer Name', 'Customer Address', 'Customer Phone', 'Status', 'Items Ordered'), 'y>B')
+    for dict in list_of_orders_by_courier:
+        print("{:<10} {:<8} {:<25} {:<50} {:<17} {:<17} {:<9}".format("   "+str(dict["courier_id"]), "  "+str(dict["order_id"]), " "+str(
+            dict["customer_name"]), " "+str(dict["customer_address"]), " "+str(dict["customer_phone"]), " "+str(dict["delivery_status"]), " "+str(dict["items"])))
 
 
 def print_orders_position_list_pretty():
     my_list = create_db_order_list_ready_to_use()
     printy("\n{:<8} {:<18} {:<50} {:<17} {:<10} {:<17} {:<9}".format('Index', 'Customer Name','Customer Address', 'Customer Phone', 'Courier', 'Status', 'Items Ordered'), 'y>B')
-    for dict in enumerate(my_list, start=1):
-        print("{:<8} {:<18} {:<50} {:<17} {:<10} {:<17} {:<9}".format("  "+str(dict["order_id"]),dict["customer_name"], dict["customer_address"], dict["customer_phone"], "   "+str(dict["courier"]), dict["status"], dict["items"]))
+    for dict in my_list:
+        print("{:<8} {:<18} {:<50} {:<17} {:<10} {:<17} {:<9}".format("  "+str(dict["order_id"]), str(dict["customer_name"]), str(dict["customer_address"]), str(dict["customer_phone"]), "   "+str(dict["courier_id"]), str(dict["delivery_status"]), str(dict["items"])))
 
 
 def print_any_position_list_pretty(sub_menu_item):

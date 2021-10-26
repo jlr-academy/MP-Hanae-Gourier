@@ -245,3 +245,13 @@ def test_show_error_if_indices_not_in_option_list4(mock_print): #unhappy path
     utilities.show_error_if_indices_not_in_option_list(list_of_indices, my_list)
     #assert
     assert mock_print.call_count == 0
+
+def test_create_orders_lists_from_db():
+    #assemble
+    test_interm_list = [{'order_id': 1, 'product_id': [6, 19, 19]}, {'order_id': 3, 'product_id': [5, 19, 5]}, {'order_id': 4, 'product_id': [3]}]
+    test_order_list = [{'order_id': 1, 'customer_name': 'Elizabeth Windsor', 'customer_address': '1 Buckingham Avenue, London', 'customer_phone': '07896534236', 'courier_id': 1, 'delivery_status': 'Placed'}, {'order_id': 3, 'customer_name': 'David Attenborough', 'customer_address': '5 Regency Road, London', 'customer_phone': '07645384956', 'courier_id': 4, 'delivery_status': 'Placed'}, {'order_id': 4, 'customer_name': 'Bear Grylls', 'customer_address': '23 Limestreet, London', 'customer_phone': '07635774626', 'courier_id': 7, 'delivery_status': 'Being Delivered'}]
+    expected = [{'order_id': 1, 'customer_name': 'Elizabeth Windsor', 'customer_address': '1 Buckingham Avenue, London', 'customer_phone': '07896534236', 'courier_id': 1, 'delivery_status': 'Placed', 'items':[6, 19, 19]}, {'order_id': 3, 'customer_name': 'David Attenborough', 'customer_address': '5 Regency Road, London', 'customer_phone': '07645384956', 'courier_id': 4, 'delivery_status': 'Placed', 'items':[5, 19, 5]}, {'order_id': 4, 'customer_name': 'Bear Grylls', 'customer_address': '23 Limestreet, London', 'customer_phone': '07635774626', 'courier_id': 7, 'delivery_status': 'Being Delivered', 'items':[3]}]
+    #act
+    actual = utilities.create_orders_lists_from_db(test_interm_list, test_order_list)
+    #assert
+    actual == expected

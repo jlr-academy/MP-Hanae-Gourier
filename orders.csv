@@ -1,1 +1,4 @@
-customer_name,customer_address,customer_phone,courier,status,items
+order_id,customer_name,customer_address,customer_phone,courier_id,delivery_status,items
+1,Elizabeth Windsor,"1 Buckingham Avenue, London",07896534236,1,Placed,
+3,David Attenborough,"5 Regency Road, London",07645384956,4,Placed,
+4,Bear Grylls,"23 Limestreet, London",07635774626,7,Being Delivered,

@@ -251,7 +251,7 @@ def update_order_status(sub_menu_item, my_list):
         if modified_dict_index >= len(my_list):
             print("\n Error, index not available in list\n")
         else:
-            status_list = ["PLACED", "PREPARING","BEING DELIVERED", "DELIVERED", "CANCELLED"]
+            status_list = ["PLACED", "PREPARING","BEING DELIVERED", "DELIVERED"]
             utilities.print_position_list(status_list)
             modified_item_index = int(
                 input('\n Please input index of new status: \n')) - 1
@@ -294,17 +294,18 @@ def update_order(sub_menu_item, list):
             utilities.clear_screen()
             utilities.print_any_position_list_pretty(sub_menu_item, list)
         elif modified_item_index == 3:
-                utilities.print_courier_position_list_pretty()
-                new_courier = input(
-                    f"\n Please type in new value: \n").title()
-                available_couriers=utilities.get_list_of_courier_keys_from_db()
-                #if utilities.show_error_if_index_not_in_option_list(new_courier,available_couriers)==True:
-                dictionary = list[modified_dict_index]
-                list_of_keys = utilities.get_list_of_dict_keys(dictionary)
-                key_being_modified = list_of_keys[modified_item_index]
-                dictionary[key_being_modified] = new_courier
-                utilities.clear_screen()
-                utilities.print_any_position_list_pretty(sub_menu_item, list)
+            utilities.print_courier_position_list_pretty()
+            new_courier = input(
+                f"\n Please type in new value: \n").title()
+            available_couriers=utilities.get_list_of_courier_keys_from_db()
+            if utilities.show_error_if_index_not_in_option_list(new_courier,available_couriers):
+                return
+            dictionary = list[modified_dict_index]
+            list_of_keys = utilities.get_list_of_dict_keys(dictionary)
+            key_being_modified = list_of_keys[modified_item_index]
+            dictionary[key_being_modified] = new_courier
+            utilities.clear_screen()
+            utilities.print_any_position_list_pretty(sub_menu_item, list)
         else:
             modified_item_value = input(
                 f"\n Please type in new value: \n").title()

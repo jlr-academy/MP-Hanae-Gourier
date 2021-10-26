@@ -20,7 +20,7 @@ def process_main_menu(product_list, courier_list, orders_list, customer_list):
         display_main_menu()
         user_choice1 = int(input())
         if user_choice1 == 0:
-            utilities.save_list(product_list)
+            utilities.save_list(orders_list, product_list, courier_list, customer_list)
             break
         elif user_choice1 == 1:
             sub_menu("Product", product_list)
