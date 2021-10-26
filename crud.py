@@ -17,7 +17,7 @@ def add_product(sub_menu_item):
             if new_item_quantity_input.isnumeric() is not True:
                 print("Error, input is not a valid quantity")
                 return
-            new_item_quantity = float(new_item_quantity_input)
+            new_item_quantity = int(new_item_quantity_input)
             try:
                 connection = sql_utilities.connect_to_db()
                 cursor = connection.cursor()
@@ -42,6 +42,7 @@ def add_courier(sub_menu_item):
             f"Please type new {sub_menu_item.lower()} phone: \n")
         if new_item_phone.isnumeric() is not True:
             print("Error, please enter a valid phone number")
+            return
         else:
             try:
                 connection = sql_utilities.connect_to_db()
@@ -220,6 +221,9 @@ def update_customer():
             cursor = connection.cursor()
             modified_dict_index = int(
                 input(f"\n Please input index of the customer to be modified: "))
+            available_products = utilities.get_list_of_customer_keys_from_db()
+            if utilities.show_error_if_index_not_in_option_list(modified_dict_index, available_products):
+                return
             sql = ('SELECT * FROM customer WHERE customer_id = %s')
             val = (str(modified_dict_index))
             cursor.execute(sql, val)
@@ -244,8 +248,11 @@ def update_customer():
                 cursor.execute(sql, val)
                 connection.commit()
             elif modified_item_index == 3:
-                modified_customer_phone = float(
-                    input(f"\n Please type in new customer phone number: \n"))
+                modified_customer_phone_input = input(f"\n Please type in new customer phone number: \n")
+                if modified_customer_phone_input.isnumeric() is not True:
+                    print("Error, input is not a valid phone number")
+                    return
+                modified_customer_phone = int(modified_customer_phone_input)
                 sql = "UPDATE customer set customer_phone=%s WHERE customer_id=%s"
                 val = (modified_customer_phone, str(modified_dict_index))
                 cursor.execute(sql, val)
@@ -401,6 +408,9 @@ def delete_customer():
             cursor = connection.cursor()
             modified_dict_index = int(
                 input(f"\n Please input index of the customer to be deleted: "))
+            available_products = utilities.get_list_of_customer_keys_from_db()
+            if utilities.show_error_if_index_not_in_option_list(modified_dict_index, available_products):
+                return
             confirmation = input(
                 f"Are you sure you want to delete this customer? Please select Y to confirm: ")
             if confirmation == "y":

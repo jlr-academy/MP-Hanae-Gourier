@@ -98,6 +98,11 @@ def get_list_of_courier_keys_from_db():
     return [my_dict['courier_id'] for my_dict in my_list]
 
 
+def get_list_of_customer_keys_from_db():
+    my_list = sql_utilities.open_database_customer_table([])
+    return [my_dict['customer_id'] for my_dict in my_list]
+
+
 def print_logo(app_name):
     print("\n")
     logo_font = Figlet(font='stampatello', justify="center")
