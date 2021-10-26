@@ -167,14 +167,14 @@ def update_db_quantities(amended_items_list: list):
 
 def show_error_if_index_not_in_option_list(my_index, my_list):
     if my_index not in my_list:
-        print("Error, this item does not exist, please try again.")
+        print("Error, this item does not exist, program will now return to previous menu.")
         return True
 
 
 def show_error_if_indices_not_in_option_list(list_of_indices, my_list):
     for my_index in list_of_indices:
         if my_index not in my_list:
-            print("Error, you have selected one or more products that do not exist, please try again")
+            print("Error, you have selected one or more products that do not exist, program will now return to previous menu")
             return True
 
 
