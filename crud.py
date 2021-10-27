@@ -92,7 +92,6 @@ def add_customer(sub_menu_item):
 def add_order():
     while True:
         new_customer_id = utilities.select_customer()
-        print(new_customer_id)
         utilities.print_courier_position_list_pretty()
         new_courier_id = int(input(
             "\n Please input index of courier chosen for this order: "))
@@ -113,7 +112,7 @@ def add_order():
             return
         order_id = sql_utilities.add_new_order_to_database(new_customer_id, new_courier_id, new_delivery_status)
         print(order_id)
-        sql_utilities.update_db_with_products(order_id, new_items_list)
+        sql_utilities.update_db_with_new_products(order_id, new_items_list)
         utilities.update_db_quantities(new_items_list)
         utilities.clear_screen()
         utilities.print_orders_position_list_pretty()
@@ -181,8 +180,10 @@ def update_courier():
         try:
             connection = sql_utilities.connect_to_db()
             cursor = connection.cursor()
-            modified_dict_index = int(
-                input(f"\n Please input index of the courier to be modified: "))
+            modified_dict_index = int(input(f"\n Please input index of the courier to be modified: "))
+            available_couriers = utilities.get_list_of_courier_keys_from_db()
+            if utilities.show_error_if_index_not_in_option_list(modified_dict_index, available_couriers):
+                return
             sql = ('SELECT * FROM courier WHERE courier_id = %s')
             val = (str(modified_dict_index))
             cursor.execute(sql, val)
@@ -199,6 +200,7 @@ def update_courier():
                 val = (str(modified_courier_name), str(modified_dict_index))
                 cursor.execute(sql, val)
                 connection.commit()
+                sql_utilities.close_db(cursor, connection)
             elif modified_item_index == 2:
                 modified_courier_phone = float(
                     input(f"\n Please type in new courier phone number: \n"))
@@ -206,7 +208,10 @@ def update_courier():
                 val = (modified_courier_phone, str(modified_dict_index))
                 cursor.execute(sql, val)
                 connection.commit()
-            sql_utilities.close_db(cursor, connection)
+                sql_utilities.close_db(cursor, connection)
+            else:
+                print("Error, index not within list, program will now return to courier menu.")
+                return
         except Exception as e:
             print(f"Failed to open courier database table. Error is: {e}")
         break
@@ -286,7 +291,6 @@ def update_order():
         print("Error, please select an index from the list above")
 
 
-
 def delete_product():
     utilities.clear_screen()
     while True:
@@ -300,7 +304,7 @@ def delete_product():
             if utilities.show_error_if_index_not_in_option_list(modified_dict_index, available_products):
                 return
             confirmation = input(
-                f"Are you sure you want to delete this product? Please select Y to confirm: ")
+                f"Are you sure you want to delete this product? Please note products that are currently active in orders cannot be deleted. Please select Y to confirm: ")
             if confirmation == "y":
                 sql = "DELETE FROM product WHERE product_id=%s"
                 val = (str(modified_dict_index))
@@ -331,7 +335,7 @@ def delete_courier():
             if utilities.show_error_if_index_not_in_option_list(modified_dict_index, available_products):
                 return
             confirmation = input(
-                f"Are you sure you want to delete this courier? Please select Y to confirm: ")
+                f"Are you sure you want to delete this courier? Please note couriers that are currently active in orders cannot be deleted. Please select Y to confirm: ")
             if confirmation == "y":
                 sql = "DELETE FROM courier WHERE courier_id=%s"
                 val = (str(modified_dict_index))
@@ -362,7 +366,7 @@ def delete_customer():
             if utilities.show_error_if_index_not_in_option_list(modified_dict_index, available_products):
                 return
             confirmation = input(
-                f"Are you sure you want to delete this customer? Please select Y to confirm: ")
+                f"Are you sure you want to delete this customer? Please note customers that are currently active in orders cannot be deleted. Please select Y to confirm: ")
             if confirmation == "y":
                 sql = "DELETE FROM customer WHERE customer_id=%s"
                 val = (str(modified_dict_index))
@@ -392,8 +396,10 @@ def delete_order():
             confirmation = input(
                 f"Are you sure you want to delete this order? Please select Y to confirm: ")
             if confirmation == "y":
-                sql = "DELETE FROM ordeer WHERE order_id=%s"
+                sql2 = "DELETE FROM order_items WHERE order_id=%s"
                 val = (str(modified_dict_index))
+                cursor.execute(sql2, val)
+                sql = "DELETE FROM ordeer WHERE order_id=%s"
                 cursor.execute(sql, val)
                 connection.commit()
                 sql_utilities.close_db(cursor, connection)

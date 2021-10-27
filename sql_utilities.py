@@ -118,12 +118,12 @@ def close_db(cursor, connection):
 
 
 def select_customer_from_list():
-    customer_id_input = input("\n Please the index of the customer chosen for this order: ")
+    customer_id_input = input("\n Please enter the index of the customer chosen for this order: ")
     new_customer_id = int(customer_id_input)
     available_customers = utilities.get_list_of_customer_keys_from_db()
     if utilities.show_error_if_index_not_in_option_list(new_customer_id, available_customers):
         return
-    return new_customer_id
+    else: return new_customer_id #HOW DO I FIX THIS? ADD ORDER< EXISTING CUSTOMER< INDEX THAT DOESN'T EXIST
 
 
 def select_order_from_list():
