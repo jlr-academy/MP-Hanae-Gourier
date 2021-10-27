@@ -211,54 +211,19 @@ def update_courier():
     utilities.print_courier_position_list_pretty()
 
 
-def update_customer():
+def update_customer(customer_id=None):
     utilities.clear_screen()
     while True:
-        utilities.print_customer_position_list_pretty()
-        try:
-            connection = sql_utilities.connect_to_db()
-            cursor = connection.cursor()
-            modified_dict_index = int(
+        if customer_id == None:
+            utilities.print_customer_position_list_pretty()
+            customer_id = int(
                 input(f"\n Please input index of the customer to be modified: "))
             available_products = utilities.get_list_of_customer_keys_from_db()
-            if utilities.show_error_if_index_not_in_option_list(modified_dict_index, available_products):
+            if utilities.show_error_if_index_not_in_option_list(customer_id, available_products):
                 return
-            sql = ('SELECT * FROM customer WHERE customer_id = %s')
-            val = (str(modified_dict_index))
-            cursor.execute(sql, val)
-            rows = cursor.fetchall()
-            for row in rows:
-                print(
-                    f'1 - Customer Name: {row[1]}\n2 - Customer Address: {row[2]}\n3 - Customer Phone Number: {row[3]}')
-            modified_item_index = int(
-                input(f"\n Please input index of the category to be modified: \n"))
-            if modified_item_index == 1:
-                modified_customer_name = input(
-                    f"\n Please type in new customer name: \n").title()
-                sql = "UPDATE customer SET customer_name=%s WHERE customer_id=%s"
-                val = (str(modified_customer_name), str(modified_dict_index))
-                cursor.execute(sql, val)
-                connection.commit()
-            elif modified_item_index == 2:
-                modified_customer_address = input(
-                    f"\n Please type in new customer address: \n")
-                sql = "UPDATE customer set customer_address=%s WHERE customer_id=%s"
-                val = (str(modified_customer_address), str(modified_dict_index))
-                cursor.execute(sql, val)
-                connection.commit()
-            elif modified_item_index == 3:
-                modified_customer_phone_input = input(f"\n Please type in new customer phone number: \n")
-                if modified_customer_phone_input.isnumeric() is not True:
-                    print("Error, input is not a valid phone number")
-                    return
-                modified_customer_phone = int(modified_customer_phone_input)
-                sql = "UPDATE customer set customer_phone=%s WHERE customer_id=%s"
-                val = (modified_customer_phone, str(modified_dict_index))
-                cursor.execute(sql, val)
-                connection.commit()
-            sql_utilities.close_db(cursor, connection)
-        except Exception as e:
-            print(f"Failed to open customer database table. Error is: {e}")
+            sql_utilities.update_customer_in_db(customer_id)
+        if customer_id is not None:
+            sql_utilities.update_customer_in_db(customer_id)
         break
     utilities.clear_screen()
     utilities.print_customer_position_list_pretty()
@@ -279,58 +244,40 @@ def update_order_status(sub_menu_item, my_list):
         break
 
 
-def update_order(sub_menu_item, list):
+def update_order(my_list):
     utilities.clear_screen()
-    utilities.print_any_position_list_pretty(sub_menu_item, list)
-    modified_dict_index = int(
-        input(f"\n Please input index of the order to be modified: "))-1
-    if modified_dict_index >= len(list):
-        print("\n Error, number not available in list\n")
-    else:
-        utilities.print_dict(list[modified_dict_index])
-        modified_item_index = int(
-            input(f"Please input index of the category to be modified: \n"))-1
-        if modified_item_index == 5:
-            dictionary = list[modified_dict_index]
-            list_of_keys = utilities.get_list_of_dict_keys(dictionary)
-            key_being_modified = list_of_keys[modified_item_index]
-            previous_inp = dictionary[key_being_modified]
-            previous_list = utilities.transform_inputs_into_list(previous_inp)
-            utilities.cancel_previous_order_products(previous_list)
-            utilities.print_product_position_list_pretty()
-            modified_item_value = input(
-                f"\n Please type in new indices of products ordered. Use a space to separate indices if ordering more than one product: \n").title()
-            modified_item_value_list = utilities.transform_inputs_into_list(
-                modified_item_value)
-            utilities.update_db_quantities(modified_item_value_list)
-            dictionary = list[modified_dict_index]
-            list_of_keys = utilities.get_list_of_dict_keys(dictionary)
-            key_being_modified = list_of_keys[modified_item_index]
-            dictionary[key_being_modified] = modified_item_value
-            utilities.clear_screen()
-            utilities.print_any_position_list_pretty(sub_menu_item, list)
-        elif modified_item_index == 3:
-            utilities.print_courier_position_list_pretty()
-            new_courier = input(
-                f"\n Please type in new value: \n").title()
-            available_couriers=utilities.get_list_of_courier_keys_from_db()
-            if utilities.show_error_if_index_not_in_option_list(new_courier,available_couriers):
-                return
-            dictionary = list[modified_dict_index]
-            list_of_keys = utilities.get_list_of_dict_keys(dictionary)
-            key_being_modified = list_of_keys[modified_item_index]
-            dictionary[key_being_modified] = new_courier
-            utilities.clear_screen()
-            utilities.print_any_position_list_pretty(sub_menu_item, list)
-        else:
-            modified_item_value = input(
-                f"\n Please type in new value: \n").title()
-            dictionary = list[modified_dict_index]
-            list_of_keys = utilities.get_list_of_dict_keys(dictionary)
-            key_being_modified = list_of_keys[modified_item_index]
-            dictionary[key_being_modified] = modified_item_value
-            utilities.clear_screen()
-            utilities.print_any_position_list_pretty(sub_menu_item, list)
+    utilities.print_orders_position_list_pretty()
+    order_id = sql_utilities.select_order_from_list()
+    utilities.print_dict(my_list[order_id])
+    modified_item_index = int(
+        input(f"Please enter the index of the category to be modified: \n"))-1
+    if modified_item_index == 5:
+        sql_utilities.modify_order_item_quantities_db(my_list, order_id)
+        utilities.clear_screen()
+        utilities.print_orders_position_list_pretty()
+    elif modified_item_index == 3:
+        utilities.print_courier_position_list_pretty()
+        new_courier_id = int(input(
+            f"\n Please enter index of modified courier: \n"))
+        available_couriers=utilities.get_list_of_courier_keys_from_db()
+        if utilities.show_error_if_index_not_in_option_list(new_courier_id,available_couriers):
+            return
+        sql_utilities.modify_courier_in_db(new_courier_id, order_id)
+        # dictionary = list[modified_dict_index]
+        # list_of_keys = utilities.get_list_of_dict_keys(dictionary)
+        # key_being_modified = list_of_keys[modified_item_index]
+        # dictionary[key_being_modified] = new_courier
+        utilities.clear_screen()
+        utilities.print_orders_position_list_pretty()
+    ##elif modified_item_index == 2 or modified_item_index == ## or modified_item_index == ##:
+        modified_item_value = input(
+            f"\n Please type in new value: \n").title()
+        my_dictionary = list[modified_dict_index]
+        list_of_keys = utilities.get_list_of_dict_keys(my_dictionary)
+        key_being_modified = list_of_keys[modified_item_index]
+        my_dictionary[key_being_modified] = modified_item_value
+        utilities.clear_screen()
+        utilities.print_orders_position_list_pretty()
 
 
 def delete_product():

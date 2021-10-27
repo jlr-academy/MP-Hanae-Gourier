@@ -202,6 +202,24 @@ def select_customer():
             print("User entry not recognised, program will return to previous menu")
             break
 
+def amend_customer_in_order():
+    while True:
+        customer_choice = int(input(
+            """Please enter 1 if you would like to modify this existing customer.\n
+            Please enter 2 if you would like to swap customer for a different customer who is already in the system.
+            Please enter 3 if you would like to create a new customer.\n"""))
+        if customer_choice == 1:
+            crud.update_customer()
+        elif customer_choice == 2:
+            print_customer_position_list_pretty()
+            new_customer_id = sql_utilities.select_customer_from_list()
+            return new_customer_id
+        elif customer_choice == 3:
+            crud.add_customer("Customer")
+            break
+        else:
+            print("User entry not recognised, program will return to previous menu")
+            break
 
 def group_interm_orders(my_list):
     sorted_list=[list(y) for x,y in itertools.groupby(sorted(my_list,key=lambda x: (x['order_id'])),lambda x: (x['order_id']))]

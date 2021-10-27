@@ -102,7 +102,7 @@ def update_order_status_db(new_delivery_status, order_id):
         load_dotenv()
         connection = connect_to_db()
         cursor = connection.cursor()
-        sql = "UPDATE ordeer set delivery_status=%s WHERE ordeer_id=%s"
+        sql = "UPDATE ordeer set delivery_status=%s WHERE order_id=%s"
         val = (str(new_delivery_status), str(order_id))
         cursor.execute(sql, val)
         connection.commit()
@@ -137,6 +137,7 @@ def select_customer_from_list():
     if utilities.show_error_if_index_not_in_option_list(new_customer_id, available_customers):
         return
     return new_customer_id
+
 
 def select_order_from_list():
     order_id_input = input("\n Please enter the index of the order to be modified: ")
@@ -200,3 +201,74 @@ def update_db_with_products(order_id, new_items_list):
         close_db(cursor,connection)
     except Exception as e:
         print(f"Failed to open product database table. Error is: {e}")
+
+
+def modify_order_item_quantities_db(my_list, order_id):
+    my_dictionary = my_list[order_id]
+    list_of_keys = utilities.get_list_of_dict_keys(my_dictionary)
+    key_being_modified = list_of_keys[order_id]
+    previous_inp = my_dictionary[key_being_modified]
+    previous_list = utilities.transform_inputs_into_list(previous_inp)
+    utilities.cancel_previous_order_products(previous_list)
+    utilities.print_product_position_list_pretty()
+    modified_item_value = input(f"\n Please entre the new indices of products ordered. Use a space to separate indices if ordering more than one product: \n").title()
+    modified_item_value_list = utilities.transform_inputs_into_list(modified_item_value)
+    utilities.update_db_quantities(modified_item_value_list)
+    # my_dictionary = my_list[order_id]
+    # list_of_keys = utilities.get_list_of_dict_keys(my_dictionary)
+    # key_being_modified = list_of_keys[order_id]
+    # my_dictionary[key_being_modified] = modified_item_value
+    update_db_with_products(order_id, modified_item_value_list)
+
+def modify_courier_in_db(new_courier_id, order_id):
+    try:
+        connection = connect_to_db()
+        cursor = connection.cursor()
+        sql = "UPDATE ordeer set courier_id=%s WHERE order_id=%s"
+        val = (str(new_courier_id), str(order_id))
+        cursor.execute(sql, val)
+        connection.commit()
+        close_db(cursor, connection)
+    except Exception as e:
+        print(f"Failed to open customer database table. Error is: {e}")
+
+def update_customer_in_db(customer_id):
+    try:
+        connection = connect_to_db()
+        cursor = connection.cursor()
+        sql = ('SELECT * FROM customer WHERE customer_id = %s')
+        val = (str(customer_id))
+        cursor.execute(sql, val)
+        rows = cursor.fetchall()
+        for row in rows:
+            print(
+                f'1 - Customer Name: {row[1]}\n2 - Customer Address: {row[2]}\n3 - Customer Phone Number: {row[3]}')
+        modified_item_index = int(
+            input(f"\n Please input index of the category to be modified: \n"))
+        if modified_item_index == 1:
+            modified_customer_name = input(
+                f"\n Please type in new customer name: \n").title()
+            sql = "UPDATE customer SET customer_name=%s WHERE customer_id=%s"
+            val = (str(modified_customer_name), str(customer_id))
+            cursor.execute(sql, val)
+            connection.commit()
+        elif modified_item_index == 2:
+            modified_customer_address = input(
+                f"\n Please type in new customer address: \n")
+            sql = "UPDATE customer set customer_address=%s WHERE customer_id=%s"
+            val = (str(modified_customer_address), str(customer_id))
+            cursor.execute(sql, val)
+            connection.commit()
+        elif modified_item_index == 3:
+            modified_customer_phone_input = input(f"\n Please type in new customer phone number: \n")
+            if modified_customer_phone_input.isnumeric() is not True:
+                print("Error, input is not a valid phone number")
+                return
+            modified_customer_phone = int(modified_customer_phone_input)
+            sql = "UPDATE customer set customer_phone=%s WHERE customer_id=%s"
+            val = (modified_customer_phone, str(customer_id))
+            cursor.execute(sql, val)
+            connection.commit()
+        close_db(cursor, connection)
+    except Exception as e:
+        print(f"Failed to open customer database table. Error is: {e}")
