@@ -109,9 +109,10 @@ def add_order():
         available_products_list=utilities.get_list_of_product_keys_from_db()
         if utilities.show_error_if_indices_not_in_option_list(new_items_list,available_products_list):
             return
-        utilities.update_db_quantities(new_items_list)
         order_id = sql_utilities.add_new_order_to_database(new_customer_id, new_courier_id, new_delivery_status)
+        print(order_id)
         sql_utilities.update_db_with_products(order_id, new_items_list)
+        utilities.update_db_quantities(new_items_list)
         utilities.clear_screen()
         utilities.print_orders_position_list_pretty()
         break
@@ -231,6 +232,7 @@ def update_customer(customer_id=None):
 def update_order_status(sub_menu_item, my_list):
     utilities.clear_screen()
     while True:
+        utilities.print_orders_position_list_pretty
         order_id = sql_utilities.select_order_from_list()
         status_list = ["PLACED", "PREPARING","BEING DELIVERED", "DELIVERED"]
         utilities.print_position_list(status_list)

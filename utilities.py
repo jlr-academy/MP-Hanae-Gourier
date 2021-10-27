@@ -228,8 +228,6 @@ def group_interm_orders(my_list):
 
 def create_orders_lists_from_db(interm_list, order_list):
     i=0
-    print(order_list)
-    print(interm_list)
     for i in range(len(order_list)):
         if order_list[i]["order_id"]==interm_list[i]["order_id"]:
             order_list[i].update({"items":interm_list[i]["product_id"]})

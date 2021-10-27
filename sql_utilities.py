@@ -184,9 +184,8 @@ def add_new_order_to_database(new_customer_id, new_courier_id, new_delivery_stat
         val = (str(new_customer_id), str(new_courier_id), str(new_delivery_status))
         cursor.execute(sql, val)
         connection.commit()
-        raw_order_id = connection.insert_id()
+        raw_order_id = cursor.lastrowid
         order_id=int(raw_order_id)
-        print(order_id)
         close_db(cursor, connection)
         return order_id
     except Exception as e:
@@ -197,8 +196,8 @@ def update_db_with_products(order_id, new_items_list):
     try:
         connection = connect_to_db()
         cursor = connection.cursor()
-        sql = "INSERT INTO order_items (order_id, product_id) VALUES (%s, %s)"
         for product_id in new_items_list:
+            sql = "INSERT INTO order_items (order_id, product_id) VALUES (%s, %s)"
             val = (str(order_id), str(product_id))
             cursor.execute(sql, val)
         connection.commit()
@@ -218,10 +217,6 @@ def modify_order_item_quantities_db(my_list, order_id):
     modified_item_value = input(f"\n Please entre the new indices of products ordered. Use a space to separate indices if ordering more than one product: \n").title()
     modified_item_value_list = utilities.transform_inputs_into_list(modified_item_value)
     utilities.update_db_quantities(modified_item_value_list)
-    # my_dictionary = my_list[order_id]
-    # list_of_keys = utilities.get_list_of_dict_keys(my_dictionary)
-    # key_being_modified = list_of_keys[order_id]
-    # my_dictionary[key_being_modified] = modified_item_value
     update_db_with_products(order_id, modified_item_value_list)
 
 def modify_courier_in_db(new_courier_id, order_id):
