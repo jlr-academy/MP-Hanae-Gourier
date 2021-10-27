@@ -97,6 +97,20 @@ def upload_new_quantities_to_db(order_quantities: list):
         print(f"Failed to open product database table. Error is: {e}")
 
 
+def update_order_status_db(new_delivery_status, order_id):
+    try:
+        load_dotenv()
+        connection = connect_to_db()
+        cursor = connection.cursor()
+        sql = "UPDATE ordeer set delivery_status=%s WHERE ordeer_id=%s"
+        val = (str(new_delivery_status), str(order_id))
+        cursor.execute(sql, val)
+        connection.commit()
+        close_db(cursor, connection)
+    except Exception as e:
+        print(f"Failed to open order database table. Error is: {e}")
+
+
 def connect_to_db(cursorclass = pymysql.cursors.Cursor):
     load_dotenv()
     host = os.environ.get("mysql_host")
@@ -117,12 +131,20 @@ def close_db(cursor, connection):
 
 
 def select_customer_from_list():
-    customer_id_input = input("\n Please input index of customer chosen for this order: ")
+    customer_id_input = input("\n Please the index of the customer chosen for this order: ")
     new_customer_id = int(customer_id_input)
     available_customers = utilities.get_list_of_customer_keys_from_db()
     if utilities.show_error_if_index_not_in_option_list(new_customer_id, available_customers):
         return
     return new_customer_id
+
+def select_order_from_list():
+    order_id_input = input("\n Please enter the index of the order to be modified: ")
+    order_id = int(order_id_input)
+    available_orders = utilities.get_list_of_order_keys_from_db()
+    if utilities.show_error_if_index_not_in_option_list(order_id, available_orders):
+        return
+    return order_id
 
 
 def open_database_order_table(my_list):

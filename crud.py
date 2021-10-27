@@ -267,22 +267,16 @@ def update_customer():
 def update_order_status(sub_menu_item, my_list):
     utilities.clear_screen()
     while True:
+        order_id = sql_utilities.select_order_from_list()
+        status_list = ["PLACED", "PREPARING","BEING DELIVERED", "DELIVERED"]
+        utilities.print_position_list(status_list)
+        modified_item_index = int(
+            input('\n Please input index of new status: \n')) - 1
+        new_delivery_status = status_list[modified_item_index]
+        sql_utilities.update_order_status_db(new_delivery_status, order_id)
+        utilities.clear_screen()
         utilities.print_orders_position_list_pretty(my_list)
-        modified_dict_index = int(input(
-            f"\n Please input index of the {sub_menu_item.lower()} for which status is to be modified: "))-1
-        if modified_dict_index >= len(my_list):
-            print("\n Error, index not available in list\n")
-        else:
-            status_list = ["PLACED", "PREPARING","BEING DELIVERED", "DELIVERED"]
-            utilities.print_position_list(status_list)
-            modified_item_index = int(
-                input('\n Please input index of new status: \n')) - 1
-            modified_item_value = status_list[modified_item_index]
-            dictionary = my_list[modified_dict_index]
-            dictionary["status"] = modified_item_value
-            utilities.clear_screen()
-            utilities.print_orders_position_list_pretty(my_list)
-            break
+        break
 
 
 def update_order(sub_menu_item, list):
