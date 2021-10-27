@@ -236,7 +236,7 @@ def add_new_order_to_database(new_customer_id, new_courier_id, new_delivery_stat
         print(f"Failed to open customer database table. Error is: {e}")
 
 
-def update_db_with_products(order_id, new_items_list):
+def update_db_with_new_products(order_id, new_items_list):
     try:
         connection = connect_to_db()
         cursor = connection.cursor()
@@ -249,19 +249,30 @@ def update_db_with_products(order_id, new_items_list):
     except Exception as e:
         print(f"Failed to open product database table. Error is: {e}")
 
+def update_db_to_remove_old_products(order_id, previous_items_list):
+    try:
+        connection = connect_to_db()
+        cursor = connection.cursor()
+        for item in previous_items_list:
+            sql = "DELETE FROM order_items WHERE order_id=%s"
+            val = (str(order_id))
+            cursor.execute(sql, val)
+        connection.commit()
+        close_db(cursor,connection)
+    except Exception as e:
+        print(f"Failed to open product database table. Error is: {e}")
+
 
 def modify_order_item_quantities_db(my_list, order_id):
-    my_dictionary = my_list[order_id]
-    list_of_keys = utilities.get_list_of_dict_keys(my_dictionary)
-    key_being_modified = list_of_keys[order_id]
-    previous_inp = my_dictionary[key_being_modified]
-    previous_list = utilities.transform_inputs_into_list(previous_inp)
+    my_dictionary = utilities.return_correct_dict_from_list(my_list, order_id)
+    previous_list = my_dictionary["items"]
     utilities.cancel_previous_order_products(previous_list)
     utilities.print_product_position_list_pretty()
-    modified_item_value = input(f"\n Please entre the new indices of products ordered. Use a space to separate indices if ordering more than one product: \n").title()
+    modified_item_value = input(f"\n Please enter the new indices of products ordered. Use a space to separate indices if ordering more than one product: \n").title()
     modified_item_value_list = utilities.transform_inputs_into_list(modified_item_value)
     utilities.update_db_quantities(modified_item_value_list)
-    update_db_with_products(order_id, modified_item_value_list)
+    update_db_to_remove_old_products(order_id, previous_list)
+    update_db_with_new_products(order_id, modified_item_value_list)
 
 def modify_courier_in_db(new_courier_id, order_id):
     try:

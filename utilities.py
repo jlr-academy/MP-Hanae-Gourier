@@ -290,4 +290,11 @@ def print_any_position_list_pretty(sub_menu_item):
     elif sub_menu_item == "Customer":
         print_customer_position_list_pretty()
 
+def return_correct_dict_from_list(my_list, order_id):
+    for my_dict in my_list:
+        if my_dict["order_id"] == order_id:
+            return my_dict
 
+# return_correct_dict_from_list([{'order_id': 1, 'customer_name': 'Elizabeth Windsor', 'customer_address': '1 Buckingham Avenue, London', 'customer_phone': '07896534236', 'courier_id': 1, 'delivery_status': 'DELIVERED', 'items': [6, 
+# 19, 19]}, {'order_id': 3, 'customer_name': 'David Attenborough', 'customer_address': '5 Regency Road, London', 'customer_phone': '07645384956', 'courier_id': 4, 'delivery_status': 'PLACED', 'items': [5, 19, 5]}, {'order_id': 4, 'customer_name': 'Bear Grylls', 'customer_address': '23 Limestreet, London', 'customer_phone': '07635774626', 'courier_id': 7, 'delivery_status': 'PLACED', 'items': [3]}, {'order_id': 26, 'customer_name': 'Elizabeth Windsor', 'customer_address': '1 Buckingham Avenue, London', 'customer_phone': '07896534236', 'courier_id': 1, 'delivery_status': 'PLACED', 'items': [1, 3]}, {'order_id': 27, 'customer_name': 'David Attenborough', 'customer_address': '5 Regency Road, London', 'customer_phone': '07645384956', 'courier_id': 2, 'delivery_status': 'PREPARING', 'items': [5, 6]}, 
+# {'order_id': 28, 'customer_name': 'Minion', 'customer_address': '123, Banana Street', 'customer_phone': '07364758475', 'courier_id': 7, 'delivery_status': 'PLACED', 'items': [19, 24]}], 28)
