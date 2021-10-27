@@ -229,10 +229,10 @@ def update_customer(customer_id=None):
     utilities.print_customer_position_list_pretty()
 
 
-def update_order_status(sub_menu_item, my_list):
+def update_order_status(my_list):
     utilities.clear_screen()
     while True:
-        utilities.print_orders_position_list_pretty
+        utilities.print_orders_position_list_pretty()
         order_id = sql_utilities.select_order_from_list()
         status_list = ["PLACED", "PREPARING","BEING DELIVERED", "DELIVERED"]
         utilities.print_position_list(status_list)
@@ -241,7 +241,7 @@ def update_order_status(sub_menu_item, my_list):
         new_delivery_status = status_list[modified_item_index]
         sql_utilities.update_order_status_db(new_delivery_status, order_id)
         utilities.clear_screen()
-        utilities.print_orders_position_list_pretty(my_list)
+        utilities.print_orders_position_list_pretty()
         break
 
 

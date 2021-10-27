@@ -78,7 +78,7 @@ def sub_menu(sub_menu_item, list1):
                 crud.add_order()
         elif user_choice2 == 3:
             if sub_menu_item == "Orders":
-                crud.update_order_status(sub_menu_item, list1)
+                crud.update_order_status(list1)
             elif sub_menu_item == "Product":
                 crud.update_product()
             elif sub_menu_item == "Customer":
@@ -87,7 +87,7 @@ def sub_menu(sub_menu_item, list1):
                 crud.update_courier()
         elif user_choice2 == 4:
             if sub_menu_item == "Orders":
-                crud.update_order(sub_menu_item, list1)
+                crud.update_order(list1)
             elif sub_menu_item == "Product":
                 crud.delete_product()
             elif sub_menu_item == "Customer":
