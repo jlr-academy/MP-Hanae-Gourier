@@ -140,6 +140,7 @@ def select_customer_from_list():
 
 
 def select_order_from_list():
+    utilities.print_orders_position_list_pretty()
     order_id_input = input("\n Please enter the index of the order to be modified: ")
     order_id = int(order_id_input)
     available_orders = utilities.get_list_of_order_keys_from_db()
@@ -162,6 +163,20 @@ def open_database_order_table(my_list):
         print(f"Failed to open order database table. Error is: {e}")
 
 
+def open_database_order_table_single_order(order_id):
+    try:
+        connection = connect_to_db(cursorclass=pymysql.cursors.DictCursor)
+        cursor = connection.cursor()
+        sql = "SELECT o.order_id, c.customer_name, c.customer_address, c.customer_phone, o.courier_id, o.delivery_status FROM ordeer o LEFT JOIN customer c ON o.customer_id = c.customer_id WHERE o.order_id=%s"
+        val= (str(order_id))
+        cursor.execute(sql, val)
+        my_list_of_dict = cursor.fetchall()
+        close_db(cursor, connection)
+        return my_list_of_dict
+    except Exception as e:
+        print(f"Failed to open order database table. Error is: {e}")
+
+
 def open_database_intermediate_order_table(my_list):
     try:
         connection = connect_to_db(cursorclass=pymysql.cursors.DictCursor)
@@ -174,6 +189,35 @@ def open_database_intermediate_order_table(my_list):
         return my_list
     except Exception as e:
         print(f"Failed to open intermediate order database table. Error is: {e}")
+
+def open_database_intermediate_order_table_single_item(my_list, order_id):
+    try:
+        connection = connect_to_db(cursorclass=pymysql.cursors.DictCursor)
+        cursor = connection.cursor()
+        sql = "SELECT * FROM order_items WHERE order_id=%s"
+        val = (str(order_id))
+        cursor.execute(sql, val)
+        rows = cursor.fetchall()
+        for row in rows:
+            my_list.append(row)
+        close_db(cursor, connection)
+        return my_list
+    except Exception as e:
+        print(f"Failed to open intermediate order database table. Error is: {e}")
+
+
+def find_customer_id_based_on_order_id(order_id):
+    try:
+        connection = connect_to_db(cursorclass=pymysql.cursors.DictCursor)
+        cursor = connection.cursor()
+        sql = "SELECT o.order_id, c.customer_id FROM ordeer o LEFT JOIN customer c ON o.customer_id = c.customer_id WHERE o.order_id=%s"
+        val= (str(order_id))
+        cursor.execute(sql, val)
+        my_list_of_dict = cursor.fetchall()
+        close_db(cursor, connection)
+        return my_list_of_dict
+    except Exception as e:
+        print(f"Failed to open order database table. Error is: {e}")
 
 
 def add_new_order_to_database(new_customer_id, new_courier_id, new_delivery_status):
@@ -263,11 +307,23 @@ def update_customer_in_db(customer_id):
             if modified_customer_phone_input.isnumeric() is not True:
                 print("Error, input is not a valid phone number")
                 return
-            modified_customer_phone = int(modified_customer_phone_input)
+            modified_customer_phone = modified_customer_phone_input
             sql = "UPDATE customer set customer_phone=%s WHERE customer_id=%s"
             val = (modified_customer_phone, str(customer_id))
             cursor.execute(sql, val)
             connection.commit()
+        close_db(cursor, connection)
+    except Exception as e:
+        print(f"Failed to open customer database table. Error is: {e}")
+
+def update_order_with_customer_id(new_customer_id, order_id):
+    try:
+        connection = connect_to_db()
+        cursor = connection.cursor()
+        sql = "UPDATE ordeer set customer_id=%s WHERE order_id=%s"
+        val = (str(new_customer_id), str(order_id))
+        cursor.execute(sql, val)
+        connection.commit()
         close_db(cursor, connection)
     except Exception as e:
         print(f"Failed to open customer database table. Error is: {e}")

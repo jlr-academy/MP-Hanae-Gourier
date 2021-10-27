@@ -196,30 +196,32 @@ def select_customer():
             new_customer_id = sql_utilities.select_customer_from_list()
             return new_customer_id
         elif customer_choice == 2:
-            crud.add_customer("Customer")
+            new_customer_name, new_customer_address, new_customer_phone, new_customer_id = crud.add_customer("Customer")
+            return new_customer_id
             break
         else:
             print("User entry not recognised, program will return to previous menu")
             break
 
-def amend_customer_in_order():
-    while True:
-        customer_choice = int(input(
-            """Please enter 1 if you would like to modify this existing customer.\n
-            Please enter 2 if you would like to swap customer for a different customer who is already in the system.
-            Please enter 3 if you would like to create a new customer.\n"""))
-        if customer_choice == 1:
-            crud.update_customer()
-        elif customer_choice == 2:
-            print_customer_position_list_pretty()
-            new_customer_id = sql_utilities.select_customer_from_list()
-            return new_customer_id
-        elif customer_choice == 3:
-            crud.add_customer("Customer")
-            break
-        else:
-            print("User entry not recognised, program will return to previous menu")
-            break
+def amend_customer_in_order(order_id):
+    customer_choice = int(input(
+        """Please enter 1 if you would like to modify this existing customer.\nPlease enter 2 if you would like to swap customer for a different customer who is already in the system.\nPlease enter 3 if you would like to create a new customer.\n"""))
+    list_of_dict = sql_utilities.find_customer_id_based_on_order_id(order_id)
+    customer_id = list_of_dict[0]["customer_id"]
+    if customer_choice == 1:
+        crud.update_customer(customer_id)
+    elif customer_choice == 2:
+        print_customer_position_list_pretty()
+        new_customer_id = sql_utilities.select_customer_from_list()
+        sql_utilities.update_order_with_customer_id(new_customer_id, order_id)
+        return new_customer_id
+    elif customer_choice == 3:
+        new_customer_name, new_customer_address, new_customer_phone, new_customer_id = crud.add_customer("Customer")
+        sql_utilities.update_order_with_customer_id(new_customer_id, order_id)
+        return
+    else:
+        print("User entry not recognised, program will return to previous menu")
+        return
 
 def group_interm_orders(my_list):
     sorted_list=[list(y) for x,y in itertools.groupby(sorted(my_list,key=lambda x: (x['order_id'])),lambda x: (x['order_id']))]
@@ -239,6 +241,14 @@ def create_db_order_list_ready_to_use():
     intermediate_order_list=[]
     order_list = sql_utilities.open_database_order_table(order_list)
     interm_list = sql_utilities.open_database_intermediate_order_table(intermediate_order_list)
+    interm_list = group_interm_orders(interm_list)
+    return create_orders_lists_from_db(interm_list, order_list)
+
+
+def create_db_order_list_ready_to_use_single_item(order_id):
+    intermediate_order_list=[]
+    order_list = sql_utilities.open_database_order_table_single_order(order_id)
+    interm_list = sql_utilities.open_database_intermediate_order_table_single_item(intermediate_order_list, order_id)
     interm_list = group_interm_orders(interm_list)
     return create_orders_lists_from_db(interm_list, order_list)
 
