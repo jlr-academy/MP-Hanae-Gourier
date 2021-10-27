@@ -127,7 +127,8 @@ def update_product():
         try:
             connection = sql_utilities.connect_to_db()
             cursor = connection.cursor()
-            modified_dict_index = int(input(f"\n Please input index of the product to be modified: "))
+            modified_dict_index_input = input(f"\n Please input index of the product to be modified: ")
+            modified_dict_index=int(modified_dict_index_input)
             available_products = utilities.get_list_of_product_keys_from_db()
             if utilities.show_error_if_index_not_in_option_list(modified_dict_index, available_products):
                 return
@@ -138,12 +139,12 @@ def update_product():
             for row in rows:
                 print(
                     f'1 - Product Name: {row[1]}\n2 - Product Price: {row[2]}\n3 - Product Quantity: {row[3]}')
-            modified_item_index = input(f"\n Please input index of the category to be modified: \n")
+            modified_item_index = int(input(f"\n Please input index of the category to be modified: \n"))
             if modified_item_index == 1:
                 modified_product_name = input(
                     f"\n Please type in new product name: \n").title()
                 sql = "UPDATE product SET product_name=%s WHERE product_id=%s"
-                val = (str(modified_product_name), str(modified_dict_index))
+                val = (str(modified_product_name), str(modified_dict_index_input))
                 cursor.execute(sql, val)
                 connection.commit()
                 sql_utilities.close_db(cursor, connection)
@@ -151,7 +152,7 @@ def update_product():
                 modified_product_price = float(
                     input(f"\n Please type in new product price: \n"))
                 sql = "UPDATE product set product_price=%s WHERE product_id=%s"
-                val = (modified_product_price, str(modified_dict_index))
+                val = (modified_product_price, str(modified_dict_index_input))
                 cursor.execute(sql, val)
                 connection.commit()
                 sql_utilities.close_db(cursor, connection)
@@ -159,7 +160,7 @@ def update_product():
                 modified_product_quantity = int(
                     input(f"\n Please type in new product quantity: \n"))
                 sql = "UPDATE product set product_quantity=%s WHERE product_id=%s"
-                val = (modified_product_quantity, str(modified_dict_index))
+                val = (modified_product_quantity, str(modified_dict_index_input))
                 cursor.execute(sql, val)
                 connection.commit()
                 sql_utilities.close_db(cursor, connection)

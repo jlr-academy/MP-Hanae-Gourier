@@ -1,8 +1,8 @@
 product_id,product_name,product_price,product_quantity
-1,Arancini,2.0,5
-3,Pizza,2.0,6
-4,Tamales,2.5,4
-5,Dan Dan Noodles,3.0,6
-6,Sweet Mint Tea,0.5,7
-19,Juice Of The Day,1.5,3
-24,Baklava,1.0,4
+1,Arancini,2.0,2
+3,Pizza,2.0,2
+4,Tamales,2.5,15
+5,Dan Dan Noodles,3.0,12
+6,Sweet Mint Tea,0.5,15
+19,Juice Of The Day,1.5,9
+24,Baklava,1.0,8

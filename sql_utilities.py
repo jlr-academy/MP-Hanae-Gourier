@@ -52,19 +52,6 @@ def open_database_customer_table(my_list):
     except Exception as e:
         print(f"Failed to open customer database table. Error is: {e}")
 
-# def fetch_customer_id_from_db():
-#     connection.insert_id()
-#         try:
-#         connection = connect_to_db(cursorclass=pymysql.cursors.DictCursor)
-#         cursor = connection.cursor()
-#         cursor.execute('SELECT * FROM customer')
-#         rows = cursor.fetchall()
-#         for row in rows:
-#             my_list.append(row)
-#         close_db(cursor, connection)
-#         return my_list
-#     except Exception as e:
-#         print(f"Failed to open customer database table. Error is: {e}")
 
 def select_quantities_from_product_table():
     try:
