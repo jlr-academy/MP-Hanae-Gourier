@@ -110,8 +110,7 @@ def add_order():
         if utilities.show_error_if_indices_not_in_option_list(new_items_list,available_products_list):
             return
         utilities.update_db_quantities(new_items_list)
-        sql_utilities.add_new_order_to_database(new_customer_id, new_courier_id, new_delivery_status)
-        #order_id =
+        order_id = sql_utilities.add_new_order_to_database(new_customer_id, new_courier_id, new_delivery_status)
         sql_utilities.update_db_with_products(order_id, new_items_list)
         utilities.clear_screen()
         utilities.print_orders_position_list_pretty()
@@ -270,12 +269,13 @@ def update_order(my_list):
         utilities.clear_screen()
         utilities.print_orders_position_list_pretty()
     ##elif modified_item_index == 2 or modified_item_index == ## or modified_item_index == ##:
-        modified_item_value = input(
-            f"\n Please type in new value: \n").title()
-        my_dictionary = list[modified_dict_index]
-        list_of_keys = utilities.get_list_of_dict_keys(my_dictionary)
-        key_being_modified = list_of_keys[modified_item_index]
-        my_dictionary[key_being_modified] = modified_item_value
+        utilities.amend_customer_in_order()
+        # modified_item_value = input(
+        #     f"\n Please type in new value: \n").title()
+        # my_dictionary = list[modified_dict_index]
+        # list_of_keys = utilities.get_list_of_dict_keys(my_dictionary)
+        # key_being_modified = list_of_keys[modified_item_index]
+        # my_dictionary[key_being_modified] = modified_item_value
         utilities.clear_screen()
         utilities.print_orders_position_list_pretty()
 

@@ -184,7 +184,11 @@ def add_new_order_to_database(new_customer_id, new_courier_id, new_delivery_stat
         val = (str(new_customer_id), str(new_courier_id), str(new_delivery_status))
         cursor.execute(sql, val)
         connection.commit()
+        raw_order_id = connection.insert_id()
+        order_id=int(raw_order_id)
+        print(order_id)
         close_db(cursor, connection)
+        return order_id
     except Exception as e:
         print(f"Failed to open customer database table. Error is: {e}")
 
