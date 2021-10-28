@@ -12,11 +12,17 @@ def add_product(sub_menu_item):
                 new_item_price = float(new_item_price_input)
             except:
                 print("Error, input is not a valid price")
-                return
+                break
+            if float(new_item_price_input)<=0:
+                print("Error, input is not a valid price")
+                break
             new_item_quantity_input = input(f"Please type new {sub_menu_item.lower()} quantity: \n")
             if new_item_quantity_input.isnumeric() is not True:
                 print("Error, input is not a valid quantity")
-                return
+                break
+            if new_item_quantity_input<=0:
+                print("Error, input is not a valid quantity")
+                break
             new_item_quantity = int(new_item_quantity_input)
             try:
                 connection = sql_utilities.connect_to_db()

@@ -42,6 +42,7 @@ def check_duplicate(my_list, item, category):
 
 def clear_screen():
     system("cls")
+    print_logo("Cafe App")
 
 
 def print_dict(dict):

@@ -17,23 +17,26 @@ def display_main_menu():
 
 def process_main_menu(product_list, courier_list, orders_list, customer_list):
     while True:
-        display_main_menu()
-        user_choice1 = int(input())
-        if user_choice1 == 0:
-            utilities.save_list(orders_list, product_list, courier_list, customer_list)
-            break
-        elif user_choice1 == 1:
-            sub_menu("Product", product_list)
-        elif user_choice1 == 2:
-            sub_menu("Courier", courier_list)
-        elif user_choice1 == 3:
-            sub_menu("Orders", orders_list)
-        elif user_choice1 == 4:
-            sub_menu("Customer", customer_list)
-        else:
-            print(
-                "User entry not recognised, program will now exit. Thank you for visiting!")
-            break
+        try:
+            display_main_menu()
+            user_choice1 = int(input())
+            if user_choice1 == 0:
+                utilities.save_list(orders_list, product_list, courier_list, customer_list)
+                break
+            elif user_choice1 == 1:
+                sub_menu("Product", product_list)
+            elif user_choice1 == 2:
+                sub_menu("Courier", courier_list)
+            elif user_choice1 == 3:
+                sub_menu("Orders", orders_list)
+            elif user_choice1 == 4:
+                sub_menu("Customer", customer_list)
+            else:
+                print(
+                    "User entry not recognised, program will now exit. Thank you for visiting!")
+                break
+        except Exception:
+            print("Error, please choose a number from the list")
     sys.exit()
 
 
@@ -53,52 +56,55 @@ def sub_menu(sub_menu_item, list1):
         else:
             print(f"""            3. Update existing {sub_menu_item.lower()}
             4. Delete {sub_menu_item.lower()}\n""")
-        user_choice2 = int(input())
-        if user_choice2 == 0:
-            utilities.clear_screen()
-            break
-        elif user_choice2 == 1:
-            utilities.clear_screen()
-            if sub_menu_item == "Orders":
-                display_list_orders()
-            elif sub_menu_item == "Product":
-                utilities.print_product_position_list_pretty()
-            elif sub_menu_item == "Customer":
-                utilities.print_customer_position_list_pretty()
+        try:
+            user_choice2 = int(input())
+            if user_choice2 == 0:
+                utilities.clear_screen()
+                break
+            elif user_choice2 == 1:
+                utilities.clear_screen()
+                if sub_menu_item == "Orders":
+                    display_list_orders()
+                elif sub_menu_item == "Product":
+                    utilities.print_product_position_list_pretty()
+                elif sub_menu_item == "Customer":
+                    utilities.print_customer_position_list_pretty()
+                else:
+                    utilities.print_courier_position_list_pretty()
+            elif user_choice2 == 2:
+                if sub_menu_item == "Product":
+                    crud.add_product(sub_menu_item)
+                elif sub_menu_item == "Courier":
+                    crud.add_courier(sub_menu_item)
+                elif sub_menu_item == "Customer":
+                    crud.add_customer(sub_menu_item)
+                else:
+                    crud.add_order()
+            elif user_choice2 == 3:
+                if sub_menu_item == "Orders":
+                    crud.update_order_status(list1)
+                elif sub_menu_item == "Product":
+                    crud.update_product()
+                elif sub_menu_item == "Customer":
+                    crud.update_customer()
+                else:
+                    crud.update_courier()
+            elif user_choice2 == 4:
+                if sub_menu_item == "Orders":
+                    crud.update_order()
+                elif sub_menu_item == "Product":
+                    crud.delete_product()
+                elif sub_menu_item == "Customer":
+                    crud.delete_customer()
+                else:
+                    crud.delete_courier()
+            elif user_choice2 == 5 and sub_menu_item == "Orders":
+                crud.delete_order()
             else:
-                utilities.print_courier_position_list_pretty()
-        elif user_choice2 == 2:
-            if sub_menu_item == "Product":
-                crud.add_product(sub_menu_item)
-            elif sub_menu_item == "Courier":
-                crud.add_courier(sub_menu_item)
-            elif sub_menu_item == "Customer":
-                crud.add_customer(sub_menu_item)
-            else:
-                crud.add_order()
-        elif user_choice2 == 3:
-            if sub_menu_item == "Orders":
-                crud.update_order_status(list1)
-            elif sub_menu_item == "Product":
-                crud.update_product()
-            elif sub_menu_item == "Customer":
-                crud.update_customer()
-            else:
-                crud.update_courier()
-        elif user_choice2 == 4:
-            if sub_menu_item == "Orders":
-                crud.update_order()
-            elif sub_menu_item == "Product":
-                crud.delete_product()
-            elif sub_menu_item == "Customer":
-                crud.delete_customer()
-            else:
-                crud.delete_courier()
-        elif user_choice2 == 5 and sub_menu_item == "Orders":
-            crud.delete_order()
-        else:
-            print("User entry not recognised, program will now go back to main menu")
-            break
+                print("User entry not recognised, program will now go back to main menu")
+                break
+        except Exception:
+            print("Error, please choose a number from the list")
 
 
 def display_list_orders():
