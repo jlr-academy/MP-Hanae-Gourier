@@ -156,6 +156,9 @@ def update_product():
             elif modified_item_index == 2:
                 modified_product_price = float(
                     input(f"\n Please type in new product price: \n"))
+                if modified_product_price<=0:
+                    print("Error, input is not a valid quantity")
+                    break
                 sql = "UPDATE product set product_price=%s WHERE product_id=%s"
                 val = (modified_product_price, str(modified_dict_index_input))
                 cursor.execute(sql, val)
@@ -164,6 +167,9 @@ def update_product():
             elif modified_item_index == 3:
                 modified_product_quantity = int(
                     input(f"\n Please type in new product quantity: \n"))
+                if modified_product_quantity<=0:
+                    print("Error, input is not a valid quantity")
+                    break
                 sql = "UPDATE product set product_quantity=%s WHERE product_id=%s"
                 val = (modified_product_quantity, str(modified_dict_index_input))
                 cursor.execute(sql, val)
