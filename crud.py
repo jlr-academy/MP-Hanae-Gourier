@@ -13,14 +13,14 @@ def add_product(sub_menu_item):
             except:
                 print("Error, input is not a valid price")
                 break
-            if float(new_item_price_input)<=0:
+            if new_item_price<=0:
                 print("Error, input is not a valid price")
                 break
             new_item_quantity_input = input(f"Please type new {sub_menu_item.lower()} quantity: \n")
             if new_item_quantity_input.isnumeric() is not True:
                 print("Error, input is not a valid quantity")
                 break
-            if new_item_quantity_input<=0:
+            if int(new_item_quantity_input)<=0:
                 print("Error, input is not a valid quantity")
                 break
             new_item_quantity = int(new_item_quantity_input)
